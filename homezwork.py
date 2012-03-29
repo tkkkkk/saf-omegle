@@ -182,7 +182,7 @@ class ConvoThread(threading.Thread):
         #Check if we actually started
         if not self.start_event.is_set():
             #Got bored
-            print"Got bored."
+            print"[%s] Got bored.",self.chat.id
             if self._is_stopped():
                 return
             else:
