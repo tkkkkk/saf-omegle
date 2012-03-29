@@ -37,11 +37,9 @@ KEYSTROKEDELAY = 0.5
 RECAPTCHA_REQUIRED = threading.Event()
 """Set if recaptcha required.  If this is true the program exits."""
 
-SCRIPT = ["hi",
-          2,
-          "brb",
+SCRIPT = ["hi. brb",
           10,
-          "im here",
+          "ok im here",
           "18 f usa",
           2,
           "im horny.",
@@ -63,6 +61,12 @@ SCRIPT = ["hi",
           "With my bot, I have gotten thousands of people to go to that site.",
           "Wanna know how good I am?  This whole time you've been talking to "
           "one of my bots.",
+          30,
+          "Wow, you're still here?",
+          "You really should find something better to do.",
+          "If you're just looking for someone to talk to, try Blurrypeople.",
+          "http://goo.gl/100ZG",
+          30,
           "Knock, Knock.",
           15,
           "Disco."
