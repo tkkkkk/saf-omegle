@@ -58,9 +58,7 @@ SCRIPT = ["hi. brb",
           "Also, I can custom-make bots for you.",
           "Interested?  omegleuser {dot} 22334 {at} gmail {dot} com "
           "(also my MSN Messenger ID).",
-          "With my bot, I have gotten thousands of people to go to that site.",
-          "Wanna know how good I am?  This whole time you've been talking to "
-          "one of my bots.",
+          "My skype name is the same without the @gmail.com bit.",
           30,
           "Wow, you're still here?",
           "If you're just looking for someone to talk to, try Blurrypeople: "
@@ -206,7 +204,7 @@ class ConvoThread(threading.Thread):
         self._wait_for_stop(FINISHDELAY)
         if not self._is_stopped():
             self.chat.disconnect()
-            print "[%s] Disconnected."%self.chat.id
+            print "[%s] Spambot disconnected."%self.chat.id
             self.stop()
 
     def stop(self):
