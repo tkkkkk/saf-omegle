@@ -184,7 +184,7 @@ class ConvoThread(threading.Thread):
         #Check if we actually started
         if not self.start_event.is_set():
             #Got bored
-            if DEBUG: print"Got bored."
+            print"Got bored."
             if self._is_stopped():
                 return
             else:
@@ -206,6 +206,7 @@ class ConvoThread(threading.Thread):
         self._wait_for_stop(FINISHDELAY)
         if not self._is_stopped():
             self.chat.disconnect()
+            print "[%s] Disconnected."%self.chat.id
             self.stop()
 
     def stop(self):
