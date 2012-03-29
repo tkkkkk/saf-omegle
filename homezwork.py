@@ -31,7 +31,7 @@ DEBUG = False
 
 FINISHDELAY = 30
 
-KEYSTROKEDELAY = 0.5
+KEYSTROKEDELAY = 0.3
 """Time it takes to tap a key"""
 
 RECAPTCHA_REQUIRED = threading.Event()
@@ -42,7 +42,7 @@ SCRIPT = ["hi. brb",
           "ok im here",
           "18 f usa",
           2,
-          "im horny.",
+          "im horny",
           "u have a pic?",
           5,
           "wanna see me?",
@@ -57,14 +57,13 @@ SCRIPT = ["hi. brb",
           "Basically, a bot is a program that talks to people on omegle.",
           "Also, I can custom-make bots for you.",
           "Interested?  omegleuser {dot} 22334 {at} gmail {dot} com "
-          "(also, works for MSN).",
+          "(also my MSN Messenger ID).",
           "With my bot, I have gotten thousands of people to go to that site.",
           "Wanna know how good I am?  This whole time you've been talking to "
           "one of my bots.",
           30,
           "Wow, you're still here?",
-          "You really should find something better to do.",
-          "If you're just looking for someone to talk to, try Blurrypeople.",
+          "If you're just looking for someone to talk to, try Blurrypeople: "
           "http://goo.gl/100ZG",
           30,
           "Knock, Knock.",
