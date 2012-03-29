@@ -63,6 +63,9 @@ SCRIPT = ["hi",
           "With my bot, I have gotten thousands of people to go to that site.",
           "Wanna know how good I am?  This whole time you've been talking to "
           "one of my bots.",
+          "Knock, Knock.",
+          15,
+          "Disco."
           ]
 """Conversation script as a list.
 Each list element is either a message to send or a pause.
