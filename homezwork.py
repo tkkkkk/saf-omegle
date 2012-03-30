@@ -37,7 +37,7 @@ KEYSTROKEDELAY = 0.3
 RECAPTCHA_REQUIRED = threading.Event()
 """Set if recaptcha required.  If this is true the program exits."""
 
-SCRIPT = ["hi. brb",
+SCRIPT = ["hi brb",
           10,
           "ok im here",
           "18 f usa",
@@ -59,11 +59,16 @@ SCRIPT = ["hi. brb",
           "Interested?  omegleuser {dot} 22334 {at} gmail {dot} com "
           "(also my MSN Messenger ID).",
           "My skype name is the same without the @gmail.com bit.",
+          "You'll have to replace the ' {dot} ' with a . "
+          "and the ' {at} ' with a @",
+          "Feel free to zap me a message",
           30,
           "Wow, you're still here?",
           "If you're just looking for someone to talk to, try Blurrypeople: "
           "http://goo.gl/100ZG",
           30,
+          "Well, since you've been talking to a computer this whole time, "
+          "how about a knock-knock joke?",
           "Knock, Knock.",
           5,
           "(Who's there?)",
@@ -73,7 +78,7 @@ SCRIPT = ["hi. brb",
           ]
 """Conversation script as a list.
 Each list element is either a message to send or a pause.
-If the element is a string (ascii or unicode) it will be sent as a message.
+If the element is a string it will be sent as a message.
 If the message is a number, it is interpreted as a time in seconds to wait before sending the next message
 """
 
