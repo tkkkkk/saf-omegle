@@ -65,8 +65,11 @@ SCRIPT = ["hi. brb",
           "http://goo.gl/100ZG",
           30,
           "Knock, Knock.",
-          15,
-          "Disco."
+          5,
+          "(Who's there?)",
+          "Disco.",
+          5,
+          "(disco who?)",
           ]
 """Conversation script as a list.
 Each list element is either a message to send or a pause.
@@ -182,7 +185,7 @@ class ConvoThread(threading.Thread):
         #Check if we actually started
         if not self.start_event.is_set():
             #Got bored
-            print"[%s] Got bored.",self.chat.id
+            print"[%s] Got bored."%self.chat.id
             if self._is_stopped():
                 return
             else:
