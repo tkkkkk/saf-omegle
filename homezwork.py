@@ -97,7 +97,7 @@ class HwEventHandler(Omegle.EventHandler):
     
     #Class variables
     
-    def __init__(self, start_event, chat_thread):
+    def __init__(self, start_event, chat_thread, print_messages=True):
         
         """Initialize event handler.
         
@@ -105,6 +105,8 @@ class HwEventHandler(Omegle.EventHandler):
         @type start_event: threading.Event
         @param chat_thread: Thread controlling the chat
         @type chat_thread: threading.Thread
+        @param print_messages: Allow normal output
+        @type print_messages: Boolean
         """
         
         self.got_first_msg = False
@@ -113,11 +115,13 @@ class HwEventHandler(Omegle.EventHandler):
         """Event to notify others when conversation starts"""
         self.chat_thread = chat_thread
         """Thread controlling the chat"""
+        self.print_messages = print_messages
+        """Control output"""
         
     def gotMessage(self,chat,var):
         #Print every message received
         for msg in var:
-            print "[%s] Stranger: %s"%(chat.id, msg)
+            if selt.print_messages: print "[%s] Stranger: %s"%(chat.id, msg)
         #If it's the first message, raise an exception and set a flag
         if self.got_first_msg == False:
             self.got_first_msg = True
@@ -134,14 +138,14 @@ class HwEventHandler(Omegle.EventHandler):
     def strangerDisconnected(self, chat, var):
         """Fires when stranger disconnects.
         """
-        print "[%s] Stranger disconnected."%chat.id
+        if self.print_messages: print "[%s] Stranger disconnected."%chat.id
         #Don't ask for more events
         chat.terminate()
         #Stop the thread (ish)
         self.chat_thread.stop()
         
     def connected(self, chat, var):
-        print "[%s] Stranger connected."%chat.id     
+        if self.print_messages: print "[%s] Stranger connected."%chat.id     
         
     def recaptchaRequired(self, chat, var):
         RECAPTCHA_REQUIRED.set()
@@ -172,21 +176,27 @@ class HwEventHandler(Omegle.EventHandler):
                 arg = ": " + str(arg)
             else:
                 arg = ""
-            print "Unhandled event %s [%s]"%(event, chat.id) + arg
+            if self.print_messages: print "Unhandled event %s [%s]"%(event, chat.id) + arg
             
 class ConvoThread(threading.Thread):
     
     """A single conversation with a stranger"""
     
     def __init__(self, script, print_convo=True):
-        """Make a conversation and wait for the stranger to say something."""
+        """Make a conversation and wait for the stranger to say something.
+        
+        @param script: Script to send to Omegle
+        @type script: String
+        @param print_convo: Turn output on or off
+        @type print_convo: Boolean
+        """
         threading.Thread.__init__(self)
         self.chat = Omegle.OmegleChat(debug=DEBUG, _id=None)
         """The chat to which to send messages"""
         self.start_event = threading.Event()
         """Fire when the stranger has started chatting."""
         self.chat.keystrokeDelay = KEYSTROKEDELAY
-        handler = HwEventHandler(self.start_event, self)
+        handler = HwEventHandler(self.start_event, self, print_convo)
         self.chat.connect_events(handler)
         self._stop = threading.Event() 
         self.script = script
