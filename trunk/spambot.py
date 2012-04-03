@@ -18,7 +18,8 @@ global DEBUG
 global FINISHDELAY
 global KEYSTROKEDELAY
 global RECAPTCHA_REQUIRED
-global SCRIPT
+global SCRIPT_HIS
+global SCRIPT_MINE
 
 ANTISPAMDELAY = 10
 """Delay in between chats"""
@@ -37,7 +38,7 @@ KEYSTROKEDELAY = 0.3
 RECAPTCHA_REQUIRED = threading.Event()
 """Set if recaptcha required.  If this is true the program exits."""
 
-SCRIPT = ["hi brb",
+SCRIPT_MINE = ["hi brb",
           10,
           "ok im here",
           "18 f usa",
@@ -81,6 +82,14 @@ Each list element is either a message to send or a pause.
 If the element is a string it will be sent as a message.
 If the message is a number, it is interpreted as a time in seconds to wait before sending the next message
 """
+
+SCRIPT_HIS = ["Hi",
+              1,
+              "asl?",
+              3,
+              "18 f usa",
+              "whats your email address?",
+              ]
 
 class HwEventHandler(Omegle.EventHandler):
     
@@ -147,7 +156,7 @@ class HwEventHandler(Omegle.EventHandler):
         
     def defaultEvent(self, event, chat, var):
         """Fires when an unexpected event occurs."""
-        if DEBUG or "DEBUG":
+        if DEBUG:
             try:
                 if var is None:
                     arg = None
@@ -169,7 +178,7 @@ class ConvoThread(threading.Thread):
     
     """A single conversation with a stranger"""
     
-    def __init__(self):
+    def __init__(self, script, print_convo=True):
         """Make a conversation and wait for the stranger to say something."""
         threading.Thread.__init__(self)
         self.chat = Omegle.OmegleChat(debug=DEBUG, _id=None)
@@ -180,6 +189,10 @@ class ConvoThread(threading.Thread):
         handler = HwEventHandler(self.start_event, self)
         self.chat.connect_events(handler)
         self._stop = threading.Event() 
+        self.script = script
+        """Script to read to Omegle"""
+        self.print_convo = print_convo
+        """True if the convo is to be printed to stdout"""
     
     def run(self):
         """Send a sequence of messages to the stranger when he's ready."""
@@ -190,7 +203,7 @@ class ConvoThread(threading.Thread):
         #Check if we actually started
         if not self.start_event.is_set():
             #Got bored
-            print"[%s] Got bored."%self.chat.id
+            if self.print_convo: print"[%s] Got bored."%self.chat.id
             if self._is_stopped():
                 return
             else:
@@ -198,12 +211,12 @@ class ConvoThread(threading.Thread):
                 self.chat.disconnect()
             return
         #Start sending lines
-        for line in SCRIPT:
+        for line in self.script:
         #Don't bother if we've stopped
             if self._is_stopped():
                 return
             if isinstance(line, basestring):
-                print "[%s] Spambot: %s"%(self.chat.id, line)
+                if self.print_convo: print "[%s] Spambot: %s"%(self.chat.id, line)
                 self.chat.say(line)
             elif isinstance(line,Number):
                 if DEBUG: print "Wating %s seconds"%str(line)
@@ -212,7 +225,7 @@ class ConvoThread(threading.Thread):
         self._wait_for_stop(FINISHDELAY)
         if not self._is_stopped():
             self.chat.disconnect()
-            print "[%s] Spambot disconnected."%self.chat.id
+            if self.print_convo: print "[%s] Spambot disconnected."%self.chat.id
             self.stop()
 
     def stop(self):
@@ -226,31 +239,21 @@ class ConvoThread(threading.Thread):
     def _wait_for_stop(self, delay=None):
         self._stop.wait(delay)
         
-class InputThread(threading.Thread):
-    """Takes input and sends it to the current chat."""
-    
-    def __init__(self, chat):
-        """Makes an input thread for a chat
-        @param chat: The chat for which to make the thread
-        @type chat: ConvoThread
-        """
-    
-    def run(self):
-        #Get a line of input
-        while True:
-            line = raw_input()
-            
-
 if __name__ == '__main__':
     #Main program loop
     while RECAPTCHA_REQUIRED.is_set() is False:
         print "Starting a conversation."
         #Make a chat
-        chat = ConvoThread()
+        my_chat = ConvoThread(SCRIPT_MINE)
         #Start it
-        chat.start()
+        my_chat.start()
+        #Run his script while mine is alive
+        while my_chat.is_alive():
+            his_chat = ConvoThread(SCRIPT_HIS)
+            his_chat.start()
+            his_chat.join()
         #Wait for it to end
-        chat.join()
+        my_chat.join()
         #Bummer
         if RECAPTCHA_REQUIRED.is_set() is True:
             print "Recaptcha required.\n"
