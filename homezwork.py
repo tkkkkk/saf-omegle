@@ -253,25 +253,30 @@ def main():
     """Launch the spambot""" 
     #Main program loop
     while RECAPTCHA_REQUIRED.is_set() is False:
-        print "Starting a conversation."
+        if not SCRIPT_HIS: print "Starting a conversation."
         #Make a chat
         my_chat = ConvoThread(SCRIPT_MINE, print_convo=(not SCRIPT_HIS))
         #Start it
         my_chat.start()
         #Run his script while mine is alive
-        while my_chat.is_alive():
+        while my_chat.is_alive() and (RECAPTCHA_REQUIRED.is_set() is False):
             if SCRIPT_HIS:
+                print "Starting a conversation."
                 his_chat = ConvoThread(SCRIPT_HIS)
                 his_chat.start()
                 his_chat.join()
                 my_chat.join(ANTISPAMDELAY)
+                if RECAPTCHA_REQUIRED.is_set() is True:
+                    print "Recaptcha required.\n"
+                else:
+                    print"Conversation terminated.\n"
         #Wait for it to end
         my_chat.join()
         #Bummer
         if RECAPTCHA_REQUIRED.is_set() is True:
-            print "Recaptcha required.\n"
+            if not SCRIPT_HIS: print "Recaptcha required.\n"
         else:
-            print"Conversation terminated.\n"
+            if not SCRIPT_HIS: print"Conversation terminated.\n"
         #Don't spam (heh)
         sleep(ANTISPAMDELAY) 
 
