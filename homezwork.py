@@ -245,7 +245,7 @@ def main():
     while RECAPTCHA_REQUIRED.is_set() is False:
         print "Starting a conversation."
         #Make a chat
-        my_chat = ConvoThread(SCRIPT_MINE)
+        my_chat = ConvoThread(SCRIPT_MINE, print_convo=(not SCRIPT_HIS))
         #Start it
         my_chat.start()
         #Run his script while mine is alive
