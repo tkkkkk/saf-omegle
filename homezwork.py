@@ -121,7 +121,7 @@ class HwEventHandler(Omegle.EventHandler):
     def gotMessage(self,chat,var):
         #Print every message received
         for msg in var:
-            if selt.print_messages: print "[%s] Stranger: %s"%(chat.id, msg)
+            if self.print_messages: print "[%s] Stranger: %s"%(chat.id, msg)
         #If it's the first message, raise an exception and set a flag
         if self.got_first_msg == False:
             self.got_first_msg = True
