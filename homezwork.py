@@ -239,7 +239,8 @@ class ConvoThread(threading.Thread):
     def _wait_for_stop(self, delay=None):
         self._stop.wait(delay)
         
-if __name__ == '__main__':
+def main():
+    """Launch the spambot""" 
     #Main program loop
     while RECAPTCHA_REQUIRED.is_set() is False:
         print "Starting a conversation."
@@ -249,9 +250,10 @@ if __name__ == '__main__':
         my_chat.start()
         #Run his script while mine is alive
         while my_chat.is_alive():
-            his_chat = ConvoThread(SCRIPT_HIS)
-            his_chat.start()
-            his_chat.join()
+            if SCRIPT_HIS:
+                his_chat = ConvoThread(SCRIPT_HIS)
+                his_chat.start()
+                his_chat.join()
         #Wait for it to end
         my_chat.join()
         #Bummer
@@ -261,3 +263,6 @@ if __name__ == '__main__':
             print"Conversation terminated.\n"
         #Don't spam (heh)
         sleep(ANTISPAMDELAY) 
+
+if __name__ == '__main__':
+    main()
