@@ -254,6 +254,7 @@ def main():
                 his_chat = ConvoThread(SCRIPT_HIS)
                 his_chat.start()
                 his_chat.join()
+                my_chat.join(ANTISPAMDELAY)
         #Wait for it to end
         my_chat.join()
         #Bummer
