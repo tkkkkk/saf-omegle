@@ -17,8 +17,8 @@ global BOREDOM_TOL
 global DEBUG
 global FINISHDELAY
 global KEYSTROKEDELAY
+global ONLY_MINE
 global RECAPTCHA_REQUIRED
-global SCRIPT_HIS
 global SCRIPT_MINE
 
 ANTISPAMDELAY = 10
@@ -34,6 +34,9 @@ FINISHDELAY = 30
 
 KEYSTROKEDELAY = 0.3
 """Time it takes to tap a key"""
+
+ONLY_MINE = True
+"""Only use my script. (normal spamming)"""
 
 RECAPTCHA_REQUIRED = threading.Event()
 """Set if recaptcha required.  If this is true the program exits."""
@@ -82,14 +85,6 @@ Each list element is either a message to send or a pause.
 If the element is a string it will be sent as a message.
 If the message is a number, it is interpreted as a time in seconds to wait before sending the next message
 """
-
-SCRIPT_HIS = ["Hi",
-              1,
-              "asl?",
-              3,
-              "18 f usa",
-              "whats your email address?",
-              ]
 
 class HwEventHandler(Omegle.EventHandler):
     
@@ -250,23 +245,42 @@ class ConvoThread(threading.Thread):
         self._stop.wait(delay)
         
 def main():
-    """Launch the spambot""" 
-    #Get info from the user about his spamming
-    try:
-        services = [("Skype", "ID"),
-                    ("Yahoo Messenger", "ID"),
-                    ("MSN Messenger", "ID"),
-                    ("Facebook", "Name")]
-        print ""
-        for i in range(len(services)):
-            print "%i. %s"%(i+1, services[i][0])
-        print ""
-        service = raw_input("Type the number of the service you'd like other "
-                            "people to use to contact you and hit [Enter]: ")
-        username = raw_input("Type the %s you'd like people to use to contact you")
-    except ValueError as e:
+    SCRIPT_HIS = []
+    if ONLY_MINE is False:
+        """Launch the spambot""" 
+        #Get info from the user about his spamming
+        try:
+            services = [("Skype", "ID"),
+                        ("Yahoo Messenger", "ID"),
+                        ("MSN Messenger", "ID"),
+                        ("Facebook", "name")]
+            print ""
+            for i in range(len(services)):
+                print "%i. %s"%(i+1, services[i][0])
+            print ""
+            service_s = raw_input("Type the number of the service you'd like other people to use to contact you: ")
+            service_i = int(service_s)
+            service_t = services[service_i-1]
+            username = raw_input("What is the %s you use on %s that you want other people to use to contact you? "%(service_t[1], service_t[0]))
+            if username == "":
+                raise ValueError()
+        except (ValueError, IndexError):
+            service_t = ("Tinychat", "link")
+            username = "http://tinychat.com/lgr5k"
+        asl = raw_input("What is your asl? ")
+        SCRIPT_HIS = ["Hi",
+                      "brb",
+                      5,
+                      "asl?",
+                      4,
+                      asl if asl else "I don't give my asl out on Omegle.",
+                      2,
+                      "Let's switch to %s.  It's much better."%service_t[0],
+                      "My %s there is %s"%(service_t[1], username),
+                      1,
+                      "See you there, cutie ;)"]
+        print SCRIPT_HIS
         return
-    return
     #Main program loop
     while RECAPTCHA_REQUIRED.is_set() is False:
         if not SCRIPT_HIS: print "Starting a conversation."
