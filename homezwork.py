@@ -251,6 +251,22 @@ class ConvoThread(threading.Thread):
         
 def main():
     """Launch the spambot""" 
+    #Get info from the user about his spamming
+    try:
+        services = [("Skype", "ID"),
+                    ("Yahoo Messenger", "ID"),
+                    ("MSN Messenger", "ID"),
+                    ("Facebook", "Name")]
+        print ""
+        for i in range(len(services)):
+            print "%i. %s"%(i+1, services[i][0])
+        print ""
+        service = raw_input("Type the number of the service you'd like other "
+                            "people to use to contact you and hit [Enter]: ")
+        username = raw_input("Type the %s you'd like people to use to contact you")
+    except ValueError as e:
+        return
+    return
     #Main program loop
     while RECAPTCHA_REQUIRED.is_set() is False:
         if not SCRIPT_HIS: print "Starting a conversation."
