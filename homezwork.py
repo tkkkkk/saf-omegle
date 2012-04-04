@@ -279,36 +279,34 @@ def main():
                       "My %s there is %s"%(service_t[1], username),
                       1,
                       "See you there, cutie ;)"]
-        print SCRIPT_HIS
-        return
     #Main program loop
     while RECAPTCHA_REQUIRED.is_set() is False:
-        if not SCRIPT_HIS: print "Starting a conversation."
+        if ONLY_MINE: print "Starting a conversation."
         #Make a chat
         my_chat = ConvoThread(SCRIPT_MINE, print_convo=(not SCRIPT_HIS))
         #Start it
         my_chat.start()
         #Run his script while mine is alive
-        while my_chat.is_alive() and (RECAPTCHA_REQUIRED.is_set() is False):
-            if SCRIPT_HIS:
-                print "Starting a conversation."
-                his_chat = ConvoThread(SCRIPT_HIS)
-                his_chat.start()
-                his_chat.join()
-                my_chat.join(ANTISPAMDELAY)
-                if RECAPTCHA_REQUIRED.is_set() is True:
-                    print "Recaptcha required.\n"
-                else:
-                    print"Conversation terminated.\n"
+        while my_chat.is_alive() and (RECAPTCHA_REQUIRED.is_set() is False) and ONLY_MINE is True:
+            print "Starting a conversation."
+            his_chat = ConvoThread(SCRIPT_HIS)
+            his_chat.start()
+            his_chat.join()
+            my_chat.join(ANTISPAMDELAY)
+            if RECAPTCHA_REQUIRED.is_set() is True:
+                print "Recaptcha required.\n"
+            else:
+                print"Conversation terminated.\n"
+            RECAPTCHA_REQUIRED.wait(ANTISPAMDELAY)
         #Wait for it to end
         my_chat.join()
         #Bummer
         if RECAPTCHA_REQUIRED.is_set() is True:
-            if not SCRIPT_HIS: print "Recaptcha required.\n"
+            if ONLY_MINE: print "Recaptcha required.\n"
         else:
-            if not SCRIPT_HIS: print"Conversation terminated.\n"
+            if ONLY_MINE: print"Conversation terminated.\n"
         #Don't spam (heh)
-        sleep(ANTISPAMDELAY) 
+        RECAPTCHA_REQUIRED.wait(ANTISPAMDELAY)
 
 if __name__ == '__main__':
     main()
