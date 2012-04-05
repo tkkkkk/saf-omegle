@@ -287,7 +287,7 @@ def main():
         #Start it
         my_chat.start()
         #Run his script while mine is alive
-        while my_chat.is_alive() and (RECAPTCHA_REQUIRED.is_set() is False) and ONLY_MINE is True:
+        while my_chat.is_alive() and (RECAPTCHA_REQUIRED.is_set() is False) and ONLY_MINE is False:
             print "Starting a conversation."
             his_chat = ConvoThread(SCRIPT_HIS)
             his_chat.start()
