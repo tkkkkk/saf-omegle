@@ -35,7 +35,7 @@ FINISHDELAY = 30
 KEYSTROKEDELAY = 0.3
 """Time it takes to tap a key"""
 
-ONLY_MINE = True
+ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
 RECAPTCHA_REQUIRED = threading.Event()
