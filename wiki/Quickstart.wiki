@@ -24,7 +24,7 @@ Before we can do that, though, we're going to have to set up handlers to handle 
         chat.say("Hello, Stranger!")
         #Hang up
         chat.disconnect()</code>
-Here we've made a very small event handling class.  It only takes care of one event: connected.  This event fires when a stranger connects.  There are, of course, other events.  These will be handled later.
+Here we've made a very small event handling class.  It only takes care of one event: connected.  This event fires when a stranger connects.  There are, of course, other [events], a partial list of which can be found on the wiki page [Events].
 
 Every handler takes two arguments:<pre>chat: the instance of Omegle.OmegleChat that fired the event
 var: a list of data relevant to the event</pre>
