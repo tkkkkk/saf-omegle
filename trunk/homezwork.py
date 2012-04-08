@@ -271,7 +271,7 @@ def main():
     #First check the version of the spambot
     try:
         version = urlopen(VERSION_URL).read()
-        if VERSION != version:
+        if (VERSION != version) and ONLY_MINE is False:
             print "You have an outdated version.  Please download a new one " + \
                   "from %s.\nHit [Enter] to terminate this program."%UPDATE_URL
             raw_input()
@@ -342,6 +342,7 @@ def main():
         #Don't spam (heh)
         RECAPTCHA_REQUIRED.wait(ANTISPAMDELAY)
     print "Omegle has detected spam.  Please press [Enter] to exit."
+    server_log("recaptcha")
     raw_input()
         
 def server_log(action, value=""):
