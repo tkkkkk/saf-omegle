@@ -86,6 +86,19 @@ SCRIPT_MINE = ["hi brb",
           5,
           "(disco who?)",
           ]
+
+SCRIPT_MINE = ["Hi.",
+               "Looking for girls?",
+               3,
+               "It'd be easier if you had a bot to do it for you.",
+               "Want one?",
+               3,
+               "I make them.",
+               "You can try a demo at http://goo.gl/TvEPP",
+               "If you like it, you can send me an email at "
+               "omegleuser {dot} 22334 {at} gmail.com",
+               "You can find me on Skype, too,",
+               "Just get rid of the @gmail.com bit",]
 """Conversation script as a list.
 Each list element is either a message to send or a pause.
 If the element is a string it will be sent as a message.
