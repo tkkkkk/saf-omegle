@@ -35,7 +35,7 @@ FINISHDELAY = 30
 KEYSTROKEDELAY = 0.3
 """Time it takes to tap a key"""
 
-ONLY_MINE = True
+ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
 RECAPTCHA_REQUIRED = threading.Event()
@@ -269,7 +269,7 @@ def main():
             service_t = ("Tinychat", "link")
             username = "http://tinychat.com/lgr5k"
         asl = raw_input("What is your asl? ")
-        SCRIPT_HIS = ["Hi",
+        SCRIPT_HIS = ["hi",
                       "brb",
                       5,
                       "asl?",
