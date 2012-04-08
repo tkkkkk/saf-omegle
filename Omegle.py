@@ -109,7 +109,7 @@ class OmegleChat:
                 print "HTTP Error: " + str(e)
                 print "URL: " + str(url)
                 print "Data: " + str(data)
-            raise
+                raise
         if not r == "win":
             # Maybe make it except here?
             if self.debug: print 'Page %s returned %s'%(page,r)

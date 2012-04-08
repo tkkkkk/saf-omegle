@@ -241,7 +241,9 @@ class ConvoThread(threading.Thread):
         #Check if we actually started
         if not self.start_event.is_set():
             #Got bored
-            if self.print_convo: print"[%s] Got bored."%self.chat.id
+            if self.print_convo: 
+                print"[%s] Got bored."%self.chat.id
+                print"[%s] Stranger took too long"%self.chat.id
             if self._is_stopped():
                 return
             else:
