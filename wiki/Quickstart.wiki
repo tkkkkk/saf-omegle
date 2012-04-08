@@ -6,9 +6,6 @@ simpleomegle is a small python API to interact with the text side of the chat si
 
 Without further ado, lets's jump into code.
 
-= Hello, World! =
-In this section we'll write an Omegle Hello, World!.
-
 == Make a Chat ==
 The first task when writing code to interact with omegle is making a chat:
 <code language="python>
