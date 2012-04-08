@@ -40,7 +40,8 @@ FINISHDELAY = 30
 KEYSTROKEDELAY = 0.3
 """Time it takes to tap a key"""
 
-ONLY_MINE = False
+ONLY_MINE = True
+#ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
 RECAPTCHA_REQUIRED = threading.Event()
@@ -87,7 +88,7 @@ SCRIPT_MINE = ["hi brb",
           "(disco who?)",
           ]
 
-SCRIPT_MINE = ["Hi.",
+xSCRIPT_MINE = ["Hi.",
                "Looking for girls?",
                3,
                "It'd be easier if you had a bot to do it for you.",
@@ -284,15 +285,16 @@ def main():
     """Launch the spambot""" 
     server_log("launch", VERSION)
     #First check the version of the spambot
-    try:
-        version = urlopen(VERSION_URL).read()
-        if (VERSION != version) and ONLY_MINE is False:
-            print "You have an outdated version.  Please download a new one " + \
-                  "from %s.\nHit [Enter] to terminate this program."%UPDATE_URL
-            raw_input()
-            return
-    except Exception:
-        pass
+    if not ONLY_MINE:
+        try:
+            version = urlopen(VERSION_URL).read()
+            if VERSION != version:
+                print "You have an outdated version.  Please download a new one " + \
+                      "from %s.\nHit [Enter] to terminate this program."%UPDATE_URL
+                raw_input()
+                return
+        except Exception:
+            pass
     SCRIPT_HIS = []
     if ONLY_MINE is False:
         #Get info from the user about his spamming
