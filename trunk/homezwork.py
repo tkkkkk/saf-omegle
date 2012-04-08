@@ -41,7 +41,7 @@ KEYSTROKEDELAY = 0.3
 """Time it takes to tap a key"""
 
 ONLY_MINE = True
-#ONLY_MINE = False
+ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
 RECAPTCHA_REQUIRED = threading.Event()
@@ -88,18 +88,6 @@ SCRIPT_MINE = ["hi brb",
           "(disco who?)",
           ]
 
-xSCRIPT_MINE = ["Hi.",
-               "Looking for girls?",
-               3,
-               "It'd be easier if you had a bot to do it for you.",
-               "Want one?",
-               3,
-               "I make them.",
-               "You can try a demo at http://goo.gl/TvEPP",
-               "If you like it, you can send me an email at "
-               "omegleuser {dot} 22334 {at} gmail.com",
-               "You can find me on Skype, too,",
-               "Just get rid of the @gmail.com bit",]
 """Conversation script as a list.
 Each list element is either a message to send or a pause.
 If the element is a string it will be sent as a message.
@@ -111,7 +99,7 @@ base_url = "http://littlesitetomakemoney.appspot.com"
 LOG_URL = base_url + "/log"
 """URL to open when we start conversing"""
 
-VERSION = "40"
+VERSION = "46"
 """Version of the software"""
 VERSION_URL = base_url + "/version"
 """URL to get the version from"""
