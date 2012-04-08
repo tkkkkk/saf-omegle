@@ -40,7 +40,7 @@ FINISHDELAY = 30
 KEYSTROKEDELAY = 0.3
 """Time it takes to tap a key"""
 
-ONLY_MINE = False
+ONLY_MINE = True
 """Only use my script. (normal spamming)"""
 
 RECAPTCHA_REQUIRED = threading.Event()
@@ -267,7 +267,7 @@ class ConvoThread(threading.Thread):
         
 def main():
     """Launch the spambot""" 
-    server_log("launch")
+    server_log("launch", VERSION)
     #First check the version of the spambot
     try:
         version = urlopen(VERSION_URL).read()
@@ -311,8 +311,8 @@ def main():
                       "My %s there is %s"%(service_t[1], username),
                       1,
                       "See you there, cutie ;)"]
-    #Log that we're doing it
-    server_log("start", value="%s-%s"%(service_t[0], asl if asl else ""))
+        #Log that we're doing it
+        server_log("start", value="%s-%s"%(service_t[0], asl if asl else ""))
     #Main program loop
     my_chat = None
     while RECAPTCHA_REQUIRED.is_set() is False:
