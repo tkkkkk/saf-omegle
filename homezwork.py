@@ -312,14 +312,16 @@ def main():
                       1,
                       "See you there, cutie ;)"]
     #Log that we're doing it
-    urlopen(LOG_URL+"?action=start", value="%s-%s"%(service_t[0], asl if asl else ""))
+    server_log("start", value="%s-%s"%(service_t[0], asl if asl else ""))
     #Main program loop
+    my_chat = None
     while RECAPTCHA_REQUIRED.is_set() is False:
         if ONLY_MINE: print "Starting a conversation."
-        #Make a chat
-        my_chat = ConvoThread(SCRIPT_MINE, print_convo=(not SCRIPT_HIS))
-        #Start it
-        my_chat.start()
+        #Make a chat if we don't have one
+        if (my_chat is None) or (not my_chat.is_alive()):
+            my_chat = ConvoThread(SCRIPT_MINE, print_convo=(not SCRIPT_HIS))
+            #Start it
+            my_chat.start()
         #Run his script while mine is alive
         while my_chat.is_alive() and (RECAPTCHA_REQUIRED.is_set() is False) and ONLY_MINE is False:
             print "Starting a conversation."
@@ -333,7 +335,12 @@ def main():
                 print"Conversation terminated.\n"
             RECAPTCHA_REQUIRED.wait(ANTISPAMDELAY)
         #Wait for it to end
-        my_chat.join()
+        if ONLY_MINE:
+            my_chat.join()
+        else:
+            if not my_chat.is_alive():
+                my_chat.join()
+            
         #Bummer
         if RECAPTCHA_REQUIRED.is_set() is True:
             if ONLY_MINE: print "Recaptcha required.\n"
