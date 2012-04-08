@@ -8,6 +8,7 @@ Created on Mar 22, 2012
 
 from numbers import Number
 from time import sleep
+from urllib import urlopen
 
 import Omegle
 import threading
@@ -17,9 +18,13 @@ global BOREDOM_TOL
 global DEBUG
 global FINISHDELAY
 global KEYSTROKEDELAY
+global LOG_URL
 global ONLY_MINE
 global RECAPTCHA_REQUIRED
 global SCRIPT_MINE
+global UPDATE_URL
+global VERSION
+global VERSION_URL
 
 ANTISPAMDELAY = 10
 """Delay in between chats"""
@@ -86,6 +91,20 @@ Each list element is either a message to send or a pause.
 If the element is a string it will be sent as a message.
 If the message is a number, it is interpreted as a time in seconds to wait before sending the next message
 """
+
+base_url = "http://littlesitetomakemoney.appspot.com/test"
+base_url = "http://127.0.0.1"
+LOG_URL = base_url + "/log"
+"""URL to open when we start conversing"""
+
+VERSION = "0"
+"""Version of the software"""
+VERSION_URL = base_url + "/version"
+"""URL to get the version from"""
+
+UPDATE_URL = base_url
+"""Where to download a new version"""
+
 
 class HwEventHandler(Omegle.EventHandler):
     
@@ -216,6 +235,7 @@ class ConvoThread(threading.Thread):
                 if DEBUG: print "Disconnecting"
                 self.chat.disconnect()
             return
+        server_log("startchat")
         #Start sending lines
         for line in self.script:
         #Don't bother if we've stopped
@@ -246,9 +266,20 @@ class ConvoThread(threading.Thread):
         self._stop.wait(delay)
         
 def main():
+    """Launch the spambot""" 
+    server_log("launch")
+    #First check the version of the spambot
+    try:
+        version = urlopen(VERSION_URL).read()
+        if VERSION != version:
+            print "You have an outdated version.  Please download a new one " + \
+                  "from %s.\nHit [Enter] to terminate this program."%UPDATE_URL
+            raw_input()
+            return
+    except Exception:
+        pass
     SCRIPT_HIS = []
     if ONLY_MINE is False:
-        """Launch the spambot""" 
         #Get info from the user about his spamming
         try:
             services = [("Skype", "ID"),
@@ -280,6 +311,8 @@ def main():
                       "My %s there is %s"%(service_t[1], username),
                       1,
                       "See you there, cutie ;)"]
+    #Log that we're doing it
+    urlopen(LOG_URL+"?action=start", value="%s-%s"%(service_t[0], asl if asl else ""))
     #Main program loop
     while RECAPTCHA_REQUIRED.is_set() is False:
         if ONLY_MINE: print "Starting a conversation."
@@ -308,6 +341,21 @@ def main():
             if ONLY_MINE: print"Conversation terminated.\n"
         #Don't spam (heh)
         RECAPTCHA_REQUIRED.wait(ANTISPAMDELAY)
+    print "Omegle has detected spam.  Please press [Enter] to exit."
+    raw_input()
+        
+def server_log(action, value=""):
+    """Log an action to the server.
+    Does not log messages if ONLY_MINE is True.
+    
+    @param action: The action to be logged
+    @type action: String
+    @param value: An optional argument to the action
+    @type value: String
+    """
+    if ONLY_MINE: return
+    urlopen(LOG_URL+"?action="+str(action)+"&value="+value)
+    return
 
 if __name__ == '__main__':
     main()
