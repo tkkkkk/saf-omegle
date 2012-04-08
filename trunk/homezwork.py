@@ -92,12 +92,12 @@ If the element is a string it will be sent as a message.
 If the message is a number, it is interpreted as a time in seconds to wait before sending the next message
 """
 
-base_url = "http://littlesitetomakemoney.appspot.com/test"
-base_url = "http://127.0.0.1"
+base_url = "http://littlesitetomakemoney.appspot.com"
+#base_url = "http://127.0.0.1"
 LOG_URL = base_url + "/log"
 """URL to open when we start conversing"""
 
-VERSION = "37"
+VERSION = "38"
 """Version of the software"""
 VERSION_URL = base_url + "/version"
 """URL to get the version from"""
