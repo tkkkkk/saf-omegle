@@ -78,11 +78,3 @@ my_chat.connect()
 #Wait for the chat to finish
 finished_event.wait()</code>
 Note we've added the use of `threading.Event` to wait for the chat to finish.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
