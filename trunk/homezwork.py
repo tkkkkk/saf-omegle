@@ -40,7 +40,7 @@ FINISHDELAY = 30
 KEYSTROKEDELAY = 0.3
 """Time it takes to tap a key"""
 
-ONLY_MINE = True
+ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
 RECAPTCHA_REQUIRED = threading.Event()
@@ -97,7 +97,7 @@ base_url = "http://127.0.0.1"
 LOG_URL = base_url + "/log"
 """URL to open when we start conversing"""
 
-VERSION = "0"
+VERSION = "37"
 """Version of the software"""
 VERSION_URL = base_url + "/version"
 """URL to get the version from"""
