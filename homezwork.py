@@ -88,6 +88,50 @@ SCRIPT_MINE = ["hi brb",
           "(disco who?)",
           ]
 
+SCRIPT_MINE = ["hi brb",
+               5,
+               "ok back",
+               "18 f usa",
+               2,
+               "im horny",
+               "r u?",
+               3,
+               "want 2 c me?",
+               8,
+               "ok heres my pic",
+               "http://goo.gl/KpG8H",
+               2,
+               "u like it?",
+               10,
+               "So, actually I'm a programmer.",
+               "My program gets girls to come to you.",
+               "Want it?",
+               10,
+               "You can find it at http://goo.gl/W6crl",
+               20,
+               "You can email me: omegleuser {dot} 22334 {at} gmail {dot} com "
+               "(also my MSN Messenger ID).",
+               "My skype name is the same without the @gmail.com bit.",
+               "You'll have to replace the ' {dot} ' with a . "
+               "and the ' {at} ' with a @",
+               "Feel free to contact me.",
+               "I can also write you your own custom program.",
+               "One last thing, I'm a dude :) (and a good programmer).",
+               30,
+               "Wow, you're still here?",
+               "If you're just looking for someone to talk to, try Blurrypeople: "
+               "http://goo.gl/100ZG",
+               30,
+               "Well, since you've been talking to a computer this whole time, "
+               "how about a knock-knock joke?",
+               "Knock, Knock.",
+               5,
+               "(Who's there?)",
+               "Disco.",
+               5,
+               "(disco who?)",
+               ]
+
 """Conversation script as a list.
 Each list element is either a message to send or a pause.
 If the element is a string it will be sent as a message.
