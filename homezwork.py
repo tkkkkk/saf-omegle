@@ -37,7 +37,7 @@ DEBUG = False
 
 FINISHDELAY = 30
 
-KEYSTROKEDELAY = 0.3
+KEYSTROKEDELAY = 0.2
 """Time it takes to tap a key"""
 
 ONLY_MINE = True
@@ -166,6 +166,8 @@ class HwEventHandler(Omegle.EventHandler):
         
     def recaptchaRequired(self, chat, var):
         RECAPTCHA_REQUIRED.set()
+#        chat.stop()
+#        chat.start_event.set()
         
     #Events to ignore
     def count(self, chat, var):
