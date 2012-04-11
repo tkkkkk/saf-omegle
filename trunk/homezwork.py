@@ -11,6 +11,8 @@ from time import sleep
 from urllib import urlopen
 
 import Omegle
+import os
+import sys
 import threading
 
 global ANTISPAMDELAY
@@ -20,7 +22,7 @@ global FINISHDELAY
 global KEYSTROKEDELAY
 global LOG_URL
 global ONLY_MINE
-global RECAPTCHA_REQUIRED
+global RUN_SILENT
 global SCRIPT_MINE
 global UPDATE_URL
 global VERSION
@@ -47,8 +49,8 @@ ONLY_MINE = True
 #ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
-RECAPTCHA_REQUIRED = threading.Event()
-"""Set if recaptcha required.  If this is true the program exits."""
+RUN_SILENT = False
+"""Run without interaction"""
 
 SCRIPT_MINE = ["hi brb",
           10,
@@ -161,12 +163,14 @@ class HwEventHandler(Omegle.EventHandler):
     
     #Class variables
     
-    def __init__(self, start_event, chat_thread, print_messages=True):
+    def __init__(self, start_event, chat_thread, recaptcha_event=None, print_messages=True):
         
         """Initialize event handler.
         
         @param start_event: Event to notify others when conversation starts
         @type start_event: threading.Event
+        @param recaptcha_event: Event to set if a recaptcha is required
+        @type recaptcha_event: threading.Event
         @param chat_thread: Thread controlling the chat
         @type chat_thread: threading.Thread
         @param print_messages: Allow normal output
@@ -181,6 +185,7 @@ class HwEventHandler(Omegle.EventHandler):
         """Thread controlling the chat"""
         self.print_messages = print_messages
         """Control output"""
+        self.recaptcha_event = recaptcha_event
         
     def gotMessage(self,chat,var):
         #Print every message received
@@ -212,9 +217,8 @@ class HwEventHandler(Omegle.EventHandler):
         if self.print_messages: print "[%s] Stranger connected."%chat.id     
         
     def recaptchaRequired(self, chat, var):
-        RECAPTCHA_REQUIRED.set()
-#        chat.stop()
-#        chat.start_event.set()
+        if self.recaptcha_event: self.recaptcha_event.set()
+        self.chat_thread.stop()
         
     #Events to ignore
     def count(self, chat, var):
@@ -248,7 +252,7 @@ class ConvoThread(threading.Thread):
     
     """A single conversation with a stranger"""
     
-    def __init__(self, script, finished_event, print_convo=True):
+    def __init__(self, script, finished_event=None, recaptcha_event=None, print_convo=True):
         """Make a conversation and wait for the stranger to say something.
         
         @param script: Script to send to Omegle
@@ -264,7 +268,9 @@ class ConvoThread(threading.Thread):
         self.start_event = threading.Event()
         """Fire when the stranger has started chatting."""
         self.chat.keystrokeDelay = KEYSTROKEDELAY
-        handler = HwEventHandler(self.start_event, self, print_convo)
+        handler = HwEventHandler(self.start_event, self, 
+                                 print_convo=print_convo, 
+                                 recaptcha_event=recaptcha_event)
         self.chat.connect_events(handler)
         self._stop = threading.Event() 
         self.script = script
@@ -273,6 +279,9 @@ class ConvoThread(threading.Thread):
         """True if the convo is to be printed to stdout"""
         #Fire when convo is done
         self.finished_event = finished_event
+        """Fires when the convo is done"""
+        self.recaptcha_event = recaptcha_event
+        """Set if a recaptcha is required"""
     
     def run(self):
         """Send a sequence of messages to the stranger when he's ready."""
@@ -314,7 +323,7 @@ class ConvoThread(threading.Thread):
             self.stop()
         
         #Fire the event and exit
-        self.finished_event.set()
+        if self.finished_event: self.finished_event.set()
         return
 
     def stop(self):
@@ -332,6 +341,10 @@ def main():
     """Launch the spambot"""
     server_log("launch", VERSION)
     
+    """If we're realling running silent, be silent"""
+    if 
+    sys.stdout = file(os.devnull, "a")
+    
         #First check the version of the spambot
     if not ONLY_MINE:
         try:
@@ -347,31 +360,40 @@ def main():
     #Thread pool
     #[(Thread, service, asl)]
     threads = []    
-    #Get set when someone is done
-    finish_event = threading.Thread()  
+    #Gets set when someone is done
+    finished_event = threading.Event()  
+    #Gets set when a recaptcha is required
+    recaptcha_event = threading.Event()
     #Make a thread for my script
-    threads.append(ConvoThread(SCRIPT_MINE, finish_event, print_convo=ONLY_MINE))
+    threads.append((ConvoThread(SCRIPT_MINE, 
+                                finished_event=finished_event, 
+                                recaptcha_event=recaptcha_event, 
+                                print_convo=ONLY_MINE), 
+                    "Omegle", "SCRIPT_MINE"))
     #Make a thread for him
     if not ONLY_MINE:
-        threads.append(ConvoThread(get_his_script(), finish_event, print_convo=True))
+        (script_his, service, asl) = get_his_script()
+        threads.append((ConvoThread(script_his, 
+                                    finished_event=finished_event, 
+                                    recaptcha_event=recaptcha_event, 
+                                    print_convo=True), 
+                        service, asl))
     
     #Main program loop
-    while True:
-        finish_event.wait(FINISHDELAY)
+    while recaptcha_event.is_set() is False:
+        if not threads[0][0].is_alive():
+            if ONLY_MINE: print "Starting a conversation"
+            threads[0].start()
         for thread in threads[1:]:
-            if thread.is_stopped():
+            if not thread.is_alive():
+                print "Starting a conversation"
+                server_log("start", value="%s-%s"%())
                 thread.start()
+        finished_event.wait(FINISHDELAY)
         
 
         
 def main():
-    """Launch the spambot""" 
-    server_log("launch", VERSION)
-    if ONLY_MINE is False:
-        #Get info from the user about his spamming
-        server_log("start", value="%s-%s"%(service_t[0], asl if asl else ""))
-    #Main program loop
-    my_chat = None
     while RECAPTCHA_REQUIRED.is_set() is False:
         if ONLY_MINE: print "Starting a conversation."
         #Make a chat if we don't have one
