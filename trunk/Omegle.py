@@ -139,10 +139,18 @@ class OmegleChat:
         ''' Tell the stranger we are no longer typing '''
         self.open_page('stoppedtyping')
 
-    def connect(self,threaded=True):
-        ''' Start a chat session'''
-        if self.id: 
-            if self.debug: print "HAVE ID: " + self.id
+    def connect(self,threaded=True, reconnect=True):
+        ''' Start a chat session.
+        @param threaded: Use a separate thread
+        @type threaded: Boolean
+        @param reconnect: Reconnect if we've disconnected
+        @type reconnect: True
+        '''
+        if self.id:
+            if reconnect:
+                self.id = None 
+            elif self.debug: 
+                print "HAVE ID: " + self.id
         elif not self.id:
             page = self.connector.open(self.url+'start')
             text = page.read()
