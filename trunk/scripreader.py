@@ -285,6 +285,7 @@ class ConvoThread(threading.Thread):
     
     def run(self):
         """Send a sequence of messages to the stranger when he's ready."""
+        if self.print_convo: print "Starting a conversation."
         #Start the chat
         self.chat.connect()
         #Wait for him
@@ -295,13 +296,13 @@ class ConvoThread(threading.Thread):
             if self.print_convo: 
                 print"[%s] Got bored."%self.chat.id
                 print"[%s] Stranger took too long"%self.chat.id
-            if self._is_stopped():
-                return
-            else:
+            if self._is_stopped() is False:
                 if DEBUG: print "Disconnecting"
                 self.chat.disconnect()
-            return
+            if self.print_convo: print "Conversation Terminated."
             self.stop()
+            self.finish_event.set()
+            
         if not self._is_stopped():
             server_log("startchat")
         #Start sending lines
@@ -324,6 +325,7 @@ class ConvoThread(threading.Thread):
         
         #Fire the event and exit
         if self.finished_event: self.finished_event.set()
+        if self.print_convo: print "Conversation Terminated."
         return
 
     def stop(self):
@@ -342,8 +344,8 @@ def main():
     server_log("launch", VERSION)
     
     """If we're realling running silent, be silent"""
-    if 
-    sys.stdout = file(os.devnull, "a")
+    if RUN_SILENT:
+        sys.stdout = file(os.devnull, "a")
     
         #First check the version of the spambot
     if not ONLY_MINE:
@@ -382,54 +384,19 @@ def main():
     #Main program loop
     while recaptcha_event.is_set() is False:
         if not threads[0][0].is_alive():
-            if ONLY_MINE: print "Starting a conversation"
             threads[0].start()
         for thread in threads[1:]:
             if not thread.is_alive():
-                print "Starting a conversation"
                 server_log("start", value="%s-%s"%())
                 thread.start()
         finished_event.wait(FINISHDELAY)
+    server_log("Recaptcha")
+    print "Omegle has detected spam.  Please press [Enter]."
+    return
+        
         
 
         
-def main():
-    while RECAPTCHA_REQUIRED.is_set() is False:
-        if ONLY_MINE: print "Starting a conversation."
-        #Make a chat if we don't have one
-        if (my_chat is None) or (not my_chat.is_alive()):
-            my_chat = ConvoThread(SCRIPT_MINE, print_convo=(not SCRIPT_HIS))
-            #Start it
-            my_chat.start()
-        #Run his script while mine is alive
-        while my_chat.is_alive() and (RECAPTCHA_REQUIRED.is_set() is False) and ONLY_MINE is False:
-            print "Starting a conversation."
-            his_chat = ConvoThread(SCRIPT_HIS)
-            his_chat.start()
-            his_chat.join()
-            my_chat.join(ANTISPAMDELAY)
-            if RECAPTCHA_REQUIRED.is_set() is True:
-                print "Recaptcha required.\n"
-            else:
-                print"Conversation terminated.\n"
-            RECAPTCHA_REQUIRED.wait(ANTISPAMDELAY)
-        #Wait for it to end
-        if ONLY_MINE:
-            my_chat.join()
-        else:
-            if not my_chat.is_alive():
-                my_chat.join()
-            
-        #Bummer
-        if RECAPTCHA_REQUIRED.is_set() is True:
-            if ONLY_MINE: print "Recaptcha required.\n"
-        else:
-            if ONLY_MINE: print"Conversation terminated.\n"
-        #Don't spam (heh)
-        RECAPTCHA_REQUIRED.wait(ANTISPAMDELAY)
-    print "Omegle has detected spam.  Please press [Enter] to exit."
-    server_log("recaptcha")
-    raw_input()
         
 def server_log(action, value=""):
     """Log an action to the server.
