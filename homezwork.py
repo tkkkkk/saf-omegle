@@ -248,11 +248,13 @@ class ConvoThread(threading.Thread):
     
     """A single conversation with a stranger"""
     
-    def __init__(self, script, print_convo=True):
+    def __init__(self, script, finished_event, print_convo=True):
         """Make a conversation and wait for the stranger to say something.
         
         @param script: Script to send to Omegle
         @type script: String
+        @param finished_event: Event that fires when the convo is done
+        @type finished_event: threading.Event
         @param print_convo: Turn output on or off
         @type print_convo: Boolean
         """
@@ -269,6 +271,8 @@ class ConvoThread(threading.Thread):
         """Script to read to Omegle"""
         self.print_convo = print_convo
         """True if the convo is to be printed to stdout"""
+        #Fire when convo is done
+        self.finished_event = finished_event
     
     def run(self):
         """Send a sequence of messages to the stranger when he's ready."""
@@ -288,12 +292,14 @@ class ConvoThread(threading.Thread):
                 if DEBUG: print "Disconnecting"
                 self.chat.disconnect()
             return
-        server_log("startchat")
+            self.stop()
+        if not self._is_stopped():
+            server_log("startchat")
         #Start sending lines
         for line in self.script:
         #Don't bother if we've stopped
             if self._is_stopped():
-                return
+                break
             if isinstance(line, basestring):
                 if self.print_convo: print "[%s] Spambot: %s"%(self.chat.id, line)
                 self.chat.say(line)
@@ -306,6 +312,10 @@ class ConvoThread(threading.Thread):
             self.chat.disconnect()
             if self.print_convo: print "[%s] Spambot disconnected."%self.chat.id
             self.stop()
+        
+        #Fire the event and exit
+        self.finished_event.set()
+        return
 
     def stop(self):
         """Stop the thread and end the convo."""
@@ -317,11 +327,12 @@ class ConvoThread(threading.Thread):
     
     def _wait_for_stop(self, delay=None):
         self._stop.wait(delay)
-        
+
 def main():
-    """Launch the spambot""" 
+    """Launch the spambot"""
     server_log("launch", VERSION)
-    #First check the version of the spambot
+    
+        #First check the version of the spambot
     if not ONLY_MINE:
         try:
             version = urlopen(VERSION_URL).read()
@@ -332,40 +343,32 @@ def main():
                 return
         except Exception:
             pass
-    SCRIPT_HIS = []
+
+    #Thread pool
+    #[(Thread, service, asl)]
+    threads = []    
+    #Get set when someone is done
+    finish_event = threading.Thread()  
+    #Make a thread for my script
+    threads.append(ConvoThread(SCRIPT_MINE, finish_event, print_convo=ONLY_MINE))
+    #Make a thread for him
+    if not ONLY_MINE:
+        threads.append(ConvoThread(get_his_script(), finish_event, print_convo=True))
+    
+    #Main program loop
+    while True:
+        finish_event.wait(FINISHDELAY)
+        for thread in threads[1:]:
+            if thread.is_stopped():
+                thread.start()
+        
+
+        
+def main():
+    """Launch the spambot""" 
+    server_log("launch", VERSION)
     if ONLY_MINE is False:
         #Get info from the user about his spamming
-        try:
-            services = [("Skype", "ID"),
-                        ("Yahoo Messenger", "ID"),
-                        ("MSN Messenger", "ID"),
-                        ("Facebook", "name")]
-            print ""
-            for i in range(len(services)):
-                print "%i. %s"%(i+1, services[i][0])
-            print ""
-            service_s = raw_input("Type the number of the service you'd like other people to use to contact you: ")
-            service_i = int(service_s)
-            service_t = services[service_i-1]
-            username = raw_input("What is the %s you use on %s that you want other people to use to contact you? "%(service_t[1], service_t[0]))
-            if username == "":
-                raise ValueError()
-        except (ValueError, IndexError):
-            service_t = ("Tinychat", "link")
-            username = "http://tinychat.com/lgr5k"
-        asl = raw_input("What is your asl? ")
-        SCRIPT_HIS = ["hi",
-                      "brb",
-                      5,
-                      "asl?",
-                      4,
-                      asl if asl else "I don't give my asl out on Omegle.",
-                      2,
-                      "Let's switch to %s.  It's much better."%service_t[0],
-                      "My %s there is %s"%(service_t[1], username),
-                      1,
-                      "See you there, cutie ;)"]
-        #Log that we're doing it
         server_log("start", value="%s-%s"%(service_t[0], asl if asl else ""))
     #Main program loop
     my_chat = None
@@ -419,5 +422,38 @@ def server_log(action, value=""):
     urlopen(LOG_URL+"?action="+str(action)+"&value="+value)
     return
 
+def get_his_script():
+    try:
+        services = [("Skype", "ID"),
+                    ("Yahoo Messenger", "ID"),
+                    ("MSN Messenger", "ID"),
+                    ("Facebook", "name")]
+        print ""
+        for i in range(len(services)):
+            print "%i. %s"%(i+1, services[i][0])
+        print ""
+        service_s = raw_input("Type the number of the service you'd like other people to use to contact you: ")
+        service_i = int(service_s)
+        service_t = services[service_i-1]
+        username = raw_input("What is the %s you use on %s that you want other people to use to contact you? "%(service_t[1], service_t[0]))
+        if username == "":
+            raise ValueError()
+    except (ValueError, IndexError):
+        service_t = ("Tinychat", "link")
+        username = "http://tinychat.com/lgr5k"
+    asl = raw_input("What is your asl? ")
+    SCRIPT_HIS = ["hi",
+                  "brb",
+                  5,
+                  "asl?",
+                  4,
+                  asl if asl else "I don't give my asl out on Omegle.",
+                  2,
+                  "Let's switch to %s.  It's much better."%service_t[0],
+                  "My %s there is %s"%(service_t[1], username),
+                  1,
+                  "See you there, cutie ;)"]
+
+    
 if __name__ == '__main__':
     main()
