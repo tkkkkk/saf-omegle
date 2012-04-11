@@ -26,6 +26,9 @@ global UPDATE_URL
 global VERSION
 global VERSION_URL
 
+AUTO_RUN = False
+"""Run in background.  Ssshh."""
+
 ANTISPAMDELAY = 10
 """Delay in between chats"""
 
