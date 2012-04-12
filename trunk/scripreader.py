@@ -35,7 +35,7 @@ ANTISPAMDELAY = 10
 BOREDOM_TOL = 10
 """Give up after this many seconds if the other person hasn't started talking."""
 
-DEBUG = True
+DEBUG = False
 """Print debug messages if True"""
 
 FINISHDELAY = 30
@@ -94,8 +94,6 @@ class HwEventHandler(Omegle.EventHandler):
         @type print_messages: Boolean
         """
         
-        self.got_first_msg = False
-        """True if the stranger has sent a message."""
         self.start_event = start_event
         """Event to notify others when conversation starts"""
         self.chat_thread = chat_thread
@@ -112,14 +110,12 @@ class HwEventHandler(Omegle.EventHandler):
         for msg in var:
             if self.print_messages: print "[%s] Stranger: %s"%(chat.id, msg)
         #If it's the first message, raise an exception and set a flag
-        if self.got_first_msg == False:
-            self.got_first_msg = True
+        if self.start_event.is_set() == False:
             self.start_event.set()
             
     def typing(self, chat, var):
         #If he's typing, he's there
-        if self.got_first_msg == False:
-            self.got_first_msg = True
+        if self.start_event.is_set() == False:
             self.start_event.set()
                 
     def strangerDisconnected(self, chat, var):
@@ -220,7 +216,7 @@ class ScriptThread(threading.Thread):
             #Wait for him
             self.start_event.wait(BOREDOM_TOL)
             if self._stop.is_set():
-                print "Return due to stop"
+                if DEBUG: print "Return due to stop"
                 return
             
             #Check if we actually started
@@ -243,7 +239,6 @@ class ScriptThread(threading.Thread):
                 
             server_log("startchat", value=self.logstr)
             #Start sending lines
-            foo = False
             for line in self.script:
             #Don't bother if we've stopped
                 if self._stop.is_set() or self.disconnected.is_set():
@@ -252,13 +247,11 @@ class ScriptThread(threading.Thread):
                     self.chat.say(line)
                     #The stranger might disconnect while we're typing
                     if self._stop.is_set() or self.disconnected.is_set():
-                        foo = True
                         break
                     if self.print_convo: print "[%s] Spambot: %s"%(self.chat.id, line)
                 elif isinstance(line,Number):
                     if DEBUG: print "Wating %s seconds"%str(line)
                     sleep(line)
-            print "Foo: " + str(foo)
                     
             #If we've been stopped, stop
             if self._stop.is_set():
@@ -273,7 +266,7 @@ class ScriptThread(threading.Thread):
                 except urllib2.HTTPError:
                     if DEBUG: print "Caught HTTP Error on disconnect."
                 server_log("selfdisconnet", value=self.logstr)  
-            print "Conversation terminated."      
+            print "Conversation terminated.\n"      
 
         return
     
