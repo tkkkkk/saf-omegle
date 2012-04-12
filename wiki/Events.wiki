@@ -10,5 +10,6 @@ This list will grow as I see more events.
 || `count` || int || The "strangers online" number ||
 || `recaptchaRequired` || str || A key for a recaptcha required to use Omegle ||
 || `stoppedTyping` || None || The stranger has stopped typing ||
+|| `strangerDisconnected` || None || The stranger has disconnected ||
 || `typing` || None || The stranger is typing ||
 || `waiting` || None || Waiting for a stranger ||
