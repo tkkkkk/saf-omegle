@@ -182,6 +182,8 @@ class ScriptThread(threading.Thread):
         @type logstr: String
         """
         threading.Thread.__init__(self)
+        self.daemon = True
+        #Daemonize
         self.chat = Omegle.OmegleChat(debug=DEBUG, _id=None)
         """The chat to which to send messages"""
         self.start_event = threading.Event()
@@ -202,6 +204,7 @@ class ScriptThread(threading.Thread):
         self.disconnected = threading.Event()
         """Set when stranger disconnects."""
         self.logstr = logstr
+        """String to use in server logs"""
     
     def run(self):
         """Send a sequence of messages to the stranger when he's ready."""
@@ -211,10 +214,16 @@ class ScriptThread(threading.Thread):
             #Start the chat
             self.disconnected.clear()
             self.start_event.clear()
-            self.chat.connect(reconnect = True)
+            if self.chat.connect(reconnect = True) is False:
+                if DEBUG: print "Could not start chat"
+                return
 
             #Wait for him
             self.start_event.wait(BOREDOM_TOL)
+            if self._stop.is_set():
+                print "Return due to stop"
+                return
+            
             #Check if we actually started
             if self.start_event.is_set() is False:
                 #Got bored
@@ -237,8 +246,8 @@ class ScriptThread(threading.Thread):
                 if self._stop.is_set() or self.disconnected.is_set():
                     break
                 if isinstance(line, basestring):
-                    if self.print_convo: print "[%s] Spambot: %s"%(self.chat.id, line)
                     self.chat.say(line)
+                    if self.print_convo: print "[%s] Spambot: %s"%(self.chat.id, line)
                 elif isinstance(line,Number):
                     if DEBUG: print "Wating %s seconds"%str(line)
                     sleep(line)
@@ -327,6 +336,7 @@ def main():
                         threads.remove(t)
         except KeyboardInterrupt:
             print "Ctrl-c received! Sending kill to threads..."
+            return
             for t in threads:
                 t.stop()
 
