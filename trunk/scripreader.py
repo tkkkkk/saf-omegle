@@ -233,7 +233,9 @@ class ScriptThread(threading.Thread):
                     if DEBUG: print "Disconnecting."
                     self.chat.disconnect()
                     print "[%s] Spambot disconnected."%self.chat.id
-                if self.print_convo: print "Conversation Terminated.\n"
+                    self.disconnected.set()
+                if self.print_convo: print "Conversation terminated.\n"
+                #Don't bother with the rest.
                 continue
           
             if self._is_stopped():
@@ -241,16 +243,22 @@ class ScriptThread(threading.Thread):
                 
             server_log("startchat", value=self.logstr)
             #Start sending lines
+            foo = False
             for line in self.script:
             #Don't bother if we've stopped
                 if self._stop.is_set() or self.disconnected.is_set():
                     break
                 if isinstance(line, basestring):
                     self.chat.say(line)
+                    #The stranger might disconnect while we're typing
+                    if self._stop.is_set() or self.disconnected.is_set():
+                        foo = True
+                        break
                     if self.print_convo: print "[%s] Spambot: %s"%(self.chat.id, line)
                 elif isinstance(line,Number):
                     if DEBUG: print "Wating %s seconds"%str(line)
                     sleep(line)
+            print "Foo: " + str(foo)
                     
             #If we've been stopped, stop
             if self._stop.is_set():
@@ -264,7 +272,8 @@ class ScriptThread(threading.Thread):
                     self.chat.disconnect()
                 except urllib2.HTTPError:
                     if DEBUG: print "Caught HTTP Error on disconnect."
-                server_log("selfdisconnet", value=self.logstr)        
+                server_log("selfdisconnet", value=self.logstr)  
+            print "Conversation terminated."      
 
         return
     

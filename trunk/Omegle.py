@@ -117,6 +117,7 @@ class OmegleChat:
                 print "HTTP Error: " + str(e)
                 print "URL: " + str(url)
                 print "Data: " + str(data)
+                print "Terminated: " + str(self.terminated.is_set())
                 raise
             r = ""
         if not r == "win":
