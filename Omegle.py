@@ -4,6 +4,7 @@ import thread
 import simplejson
 import cookielib
 import time
+import threading
 
 user_agent = "Mozilla/5.1 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.1.3) Gecko/20090824 Firefox/3.5.4"
 """Bogus user agent.  *May* be somethnig omegle uses for bot detection."""

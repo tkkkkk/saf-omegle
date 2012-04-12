@@ -15,6 +15,7 @@ import os
 import srscript
 import sys
 import threading
+import urllib2
 
 global ANTISPAMDELAY
 global BOREDOM_TOL
@@ -37,7 +38,7 @@ ANTISPAMDELAY = 10
 BOREDOM_TOL = 10
 """Give up after this many seconds if the other person hasn't started talking."""
 
-DEBUG = False
+DEBUG = True
 """Print debug messages if True"""
 
 FINISHDELAY = 30
@@ -79,7 +80,7 @@ class HwEventHandler(Omegle.EventHandler):
     
     #Class variables
     
-    def __init__(self, start_event, chat_thread, recaptcha_event=None, print_messages=True):
+    def __init__(self, start_event, chat_thread, recaptcha_event, print_messages=True):
         
         """Initialize event handler.
         
@@ -126,14 +127,14 @@ class HwEventHandler(Omegle.EventHandler):
         if self.print_messages: print "[%s] Stranger disconnected."%chat.id
         #Don't ask for more events
         chat.terminate()
-        #Stop the thread (ish)
-        self.chat_thread.stop()
+        #Tell the chat thread the stranger disconnected
+        self.chat_thread.stranger_disconnected()
         
     def connected(self, chat, var):
         if self.print_messages: print "[%s] Stranger connected."%chat.id     
         
     def recaptchaRequired(self, chat, var):
-        if self.recaptcha_event: self.recaptcha_event.set()
+        self.recaptcha_event.set()
         self.chat_thread.stop()
         
     #Events to ignore
@@ -164,19 +165,21 @@ class HwEventHandler(Omegle.EventHandler):
                 arg = ""
             if self.print_messages: print "Unhandled event %s [%s]"%(event, chat.id) + arg
             
-class ConvoThread(threading.Thread):
+class ScriptThread(threading.Thread):
     
-    """A single conversation with a stranger"""
+    """Read a script over and over again"""
     
-    def __init__(self, script, recaptcha_event=None, print_convo=True):
+    def __init__(self, script, recaptcha_event, print_convo=True, logstr=""):
         """Make a conversation and wait for the stranger to say something.
         
         @param script: Script to send to Omegle
         @type script: String
-        @param finished_event: Event that fires when the convo is done
-        @type finished_event: threading.Event
+        @param recaptcha_event: Set when a recaptcha is requested.
+        @type recaptcha_event: threading.Event
         @param print_convo: Turn output on or off
         @type print_convo: Boolean
+        @param logstr: String to use in server logs
+        @type logstr: String
         """
         threading.Thread.__init__(self)
         self.chat = Omegle.OmegleChat(debug=DEBUG, _id=None)
@@ -196,6 +199,9 @@ class ConvoThread(threading.Thread):
         #Fire when convo is done
         self.recaptcha_event = recaptcha_event
         """Set if a recaptcha is required"""
+        self.disconnected = threading.Event()
+        """Set when stranger disconnects."""
+        self.logstr = logstr
     
     def run(self):
         """Send a sequence of messages to the stranger when he's ready."""
@@ -203,30 +209,32 @@ class ConvoThread(threading.Thread):
         while self._stop.is_set() is False:
             if self.print_convo: print "Starting a conversation."
             #Start the chat
+            self.disconnected.clear()
+            self.start_event.clear()
             self.chat.connect(reconnect = True)
 
             #Wait for him
             self.start_event.wait(BOREDOM_TOL)
             #Check if we actually started
-            if not self.start_event.is_set():
+            if self.start_event.is_set() is False:
                 #Got bored
                 if self.print_convo: 
                     print"[%s] Stranger took too long."%self.chat.id
-                    server_log("gotbored")
-                if self._is_stopped() is False:
+                    server_log("gotbored", value=self.logstr)
+                if self.disconnected.is_set() is False:
                     if DEBUG: print "Disconnecting."
                     self.chat.disconnect()
-                if self.print_convo: print "Conversation Terminated."
+                if self.print_convo: print "Conversation Terminated.\n"
                 continue
           
             if self._is_stopped():
-                continue
+                break
                 
-            server_log("startchat")
+            server_log("startchat", value=self.logstr)
             #Start sending lines
             for line in self.script:
             #Don't bother if we've stopped
-                if self._is_stopped():
+                if self._stop.is_set() or self.disconnected.is_set():
                     break
                 if isinstance(line, basestring):
                     if self.print_convo: print "[%s] Spambot: %s"%(self.chat.id, line)
@@ -234,20 +242,30 @@ class ConvoThread(threading.Thread):
                 elif isinstance(line,Number):
                     if DEBUG: print "Wating %s seconds"%str(line)
                     sleep(line)
+                    
+            #If we've been stopped, stop
+            if self._stop.is_set():
+                break
             
             #Don't disconnect for a while
-            self._wait_for_stop(FINISHDELAY)
-            if not self._is_stopped():
+            self.disconnected.wait(FINISHDELAY)
+            if self.disconnected.is_set() is False:
                 if self.print_convo: print "[%s] Spambot disconnected."%self.chat.id
-                self.stop()
-        
-        #Fire the event and exit
-        if self.finished_event: self.finished_event.set()
-        if self.print_convo: print "Conversation Terminated."
+                try:
+                    self.chat.disconnect()
+                except urllib2.HTTPError:
+                    if DEBUG: print "Caught HTTP Error on disconnect."
+                server_log("selfdisconnet", value=self.logstr)        
+
         return
+    
+    def stranger_disconnected(self):
+        """Inform the thread the stranger disconnected."""
+        self.disconnected.set()
 
     def stop(self):
         """Stop the thread and end the convo."""
+        print "Got Stop"
         self._stop.set()
         
     def _is_stopped(self):
@@ -261,64 +279,64 @@ def main():
     """Launch the spambot"""
     server_log("launch", VERSION)
     
-    """If we're realling running silent, be silent"""
+    #If we're running silent, be silent
     if RUN_SILENT:
         sys.stdout = file(os.devnull, "a")
     
-        #First check the version of the spambot
+    #First check the version of the spambot
     if not ONLY_MINE:
         try:
             version = urlopen(VERSION_URL).read()
             if VERSION != version:
+                server_log("versionmismatch", VERSION)
                 print "You have an outdated version.  Please download a new one " + \
                       "from %s.\nHit [Enter] to terminate this program."%UPDATE_URL
-                raw_input()
+                if not RUN_SILENT:
+                    raw_input()
                 return
         except Exception:
             pass
 
-    #Thread pool
-    #[(Thread, service, asl)]
-    threads = []    
-    #Gets set when someone is done
-    finished_event = threading.Event()  
     #Gets set when a recaptcha is required
     recaptcha_event = threading.Event()
-    #Make a thread for my script
-    
-    threads.append((ConvoThread(get_my_script(), 
-                                finished_event=finished_event, 
-                                recaptcha_event=recaptcha_event, 
-                                print_convo=ONLY_MINE), 
-                    "Omegle", "SCRIPT_MINE"))
-    #Make a thread for him
+
+    #Make the conversation(s)
+    threads = []
+    my_thread = ScriptThread(get_my_script(), 
+                            recaptcha_event=recaptcha_event, 
+                            print_convo=ONLY_MINE)
+    my_thread.start()
+    threads.append(my_thread)
     if not ONLY_MINE:
         (script_his, service, asl) = get_his_script()
-        threads.append((ConvoThread(script_his, 
-                                    finished_event=finished_event, 
-                                    recaptcha_event=recaptcha_event, 
-                                    print_convo=True), 
-                        service, asl))
+        his_thread = ScriptThread(script_his, 
+                                 recaptcha_event=recaptcha_event, 
+                                 print_convo=True,
+                                 logstr="%s-%s"%(service, asl))
+        his_thread.start()
+        threads.append(his_thread)
+
+    while len(threads) > 0:
+        try:
+            # Join all threads using a timeout so it doesn't block
+            # Filter out threads which have been joined or are None
+            for t in threads:
+                if t is not None and t.is_alive():
+                    t.join(1)
+                    if t.is_alive() is False:
+                        threads.remove(t)
+        except KeyboardInterrupt:
+            print "Ctrl-c received! Sending kill to threads..."
+            for t in threads:
+                t.stop()
+
     
-    #Main program loop
-    for thread in threads:
-        thread[0].start()
-    while recaptcha_event.is_set() is False:
-        #Clear if we need to restart a thread
-        if finished_event.is_set(): finished_event.clear()
-        print "1" + str(threads[0][0])
-        if threads[0][0].is_alive() is False:
-            print "2" + str(threads[0][0])
-            threads[0][0].join()
-            print "2" + str(threads[0][0])
-            threads[0][0].start()
-        for thread in threads[1:]:
-            if thread[0].is_alive() is False:
-                server_log("start", value="%s-%s"%())
-                thread[0].start()
-        recaptcha_event.wait()
-    server_log("Recaptcha")
-    print "Omegle has detected spam.  Please press [Enter]."
+    #Check for a captcha.  At the moment, if this isn't set, there's a problem.
+    if recaptcha_event.is_set(): 
+        server_log("Recaptcha", value="%s-%s"%(service, asl))
+        print "Omegle has detected spam.  Please press [Enter]."
+        if not RUN_SILENT:
+            raw_input()
     return
 
         
