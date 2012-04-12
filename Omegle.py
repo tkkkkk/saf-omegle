@@ -15,6 +15,7 @@ class EventHandler:
         '''
         if hasattr(self,event):
             getattr(self,event)(chat,var)
+            return
         elif hasattr(self, "defaultEvent"):
             getattr(self, "defaultEvent")(event,chat,var)
         else:
@@ -102,13 +103,14 @@ class OmegleChat:
             handler.fire(event,self,var)
 
     def open_page(self,page,data={}):
-        if self.terminated.is_set():
-            if self.debug: print "Conversation has terminated."
-            return
         data['id'] = self.id
         try:
             url = self.url+page
             encdata = urllib.urlencode(data)
+            #Don't generate an error
+            if self.terminated.is_set():
+                if self.debug: print "Conversation has terminated."
+                return
             r = self.connector.open(url,encdata).read()
         except urllib2.HTTPError as e:
             if self.debug:
@@ -190,9 +192,8 @@ class OmegleChat:
         
 class _DefaultHandler(EventHandler):
     def strangerDisconnected(self,chat,var):
-        print "One"
         chat.terminated.set()
-    def defaultEvent(self,chat,var):
+    def defaultEvent(self,event,chat,var):
         return
 
 class _ReactorThread(threading.Thread):

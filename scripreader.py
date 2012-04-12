@@ -29,9 +29,6 @@ global UPDATE_URL
 global VERSION
 global VERSION_URL
 
-AUTO_RUN = False
-"""Run in background.  Ssshh."""
-
 ANTISPAMDELAY = 10
 """Delay in between chats"""
 
@@ -80,7 +77,8 @@ class HwEventHandler(Omegle.EventHandler):
     
     #Class variables
     
-    def __init__(self, start_event, chat_thread, recaptcha_event, print_messages=True):
+    def __init__(self, start_event, chat_thread, recaptcha_event, 
+                 disconnected_event, print_messages=True):
         
         """Initialize event handler.
         
@@ -90,6 +88,8 @@ class HwEventHandler(Omegle.EventHandler):
         @type recaptcha_event: threading.Event
         @param chat_thread: Thread controlling the chat
         @type chat_thread: threading.Thread
+        @param disconnected_event: Event to set when stranger disconnects
+        @type disconnected_event: threading.Thread
         @param print_messages: Allow normal output
         @type print_messages: Boolean
         """
@@ -103,6 +103,9 @@ class HwEventHandler(Omegle.EventHandler):
         self.print_messages = print_messages
         """Control output"""
         self.recaptcha_event = recaptcha_event
+        """Fire when we hit a recaptchaRequired"""
+        self.disconnected_event = disconnected_event
+        """Fire when we get a strangerDisconnected"""
         
     def gotMessage(self,chat,var):
         #Print every message received
@@ -118,17 +121,12 @@ class HwEventHandler(Omegle.EventHandler):
         if self.got_first_msg == False:
             self.got_first_msg = True
             self.start_event.set()
-        if DEBUG:
-            self.defaultEvent("typing", chat, var)
                 
     def strangerDisconnected(self, chat, var):
         """Fires when stranger disconnects.
         """
         if self.print_messages: print "[%s] Stranger disconnected."%chat.id
-        #Don't ask for more events
-        chat.terminate()
-        #Tell the chat thread the stranger disconnected
-        self.chat_thread.stranger_disconnected()
+        self.disconnected_event.set()
         
     def connected(self, chat, var):
         if self.print_messages: print "[%s] Stranger connected."%chat.id     
@@ -184,13 +182,16 @@ class ScriptThread(threading.Thread):
         threading.Thread.__init__(self)
         self.daemon = True
         #Daemonize
-        self.chat = Omegle.OmegleChat(debug=DEBUG, _id=None)
-        """The chat to which to send messages"""
         self.start_event = threading.Event()
         """Fire when the stranger has started chatting."""
+        self.disconnected = threading.Event()
+        """Set when stranger disconnects."""
+        self.chat = Omegle.OmegleChat(debug=DEBUG, _id=None)
+        """The chat to which to send messages"""
         self.chat.keystrokeDelay = KEYSTROKEDELAY
         handler = HwEventHandler(self.start_event, self, 
                                  print_messages=print_convo, 
+                                 disconnected_event=self.disconnected,
                                  recaptcha_event=recaptcha_event)
         self.chat.connect_events(handler)
         self._stop = threading.Event() 
@@ -201,8 +202,6 @@ class ScriptThread(threading.Thread):
         #Fire when convo is done
         self.recaptcha_event = recaptcha_event
         """Set if a recaptcha is required"""
-        self.disconnected = threading.Event()
-        """Set when stranger disconnects."""
         self.logstr = logstr
         """String to use in server logs"""
     
@@ -233,6 +232,7 @@ class ScriptThread(threading.Thread):
                 if self.disconnected.is_set() is False:
                     if DEBUG: print "Disconnecting."
                     self.chat.disconnect()
+                    print "[%s] Spambot disconnected."%self.chat.id
                 if self.print_convo: print "Conversation Terminated.\n"
                 continue
           
