@@ -12,7 +12,7 @@ from urllib import urlopen
 
 import Omegle
 import os
-import srscripts
+import srscript
 import sys
 import threading
 
@@ -24,7 +24,6 @@ global KEYSTROKEDELAY
 global LOG_URL
 global ONLY_MINE
 global RUN_SILENT
-global SCRIPT_MINE
 global UPDATE_URL
 global VERSION
 global VERSION_URL
@@ -53,90 +52,6 @@ ONLY_MINE = True
 RUN_SILENT = False
 """Run without interaction"""
 
-SCRIPT_MINE = ["hi brb",
-          10,
-          "ok im here",
-          "18 f usa",
-          2,
-          "im horny",
-          "u have a pic?",
-          5,
-          "wanna see me?",
-          10,
-          "heres my pic",
-          "http://goo.gl/TvEPP",
-          2,
-          "u like it?",
-          15,
-          "So, actually I'm a dude writing a bot.",
-          4,
-          "Basically, a bot is a program that talks to people on omegle.",
-          "Also, I can custom-make bots for you.",
-          "Interested?  omegleuser {dot} 22334 {at} gmail {dot} com "
-          "(also my MSN Messenger ID).",
-          "My skype name is the same without the @gmail.com bit.",
-          "You'll have to replace the ' {dot} ' with a . "
-          "and the ' {at} ' with a @",
-          "Feel free to zap me a message",
-          "You can also head to that site for more info (http://goo.gl/TvEPP)",
-          30,
-          "Wow, you're still here?",
-          "If you're just looking for someone to talk to, try Blurrypeople: "
-          "http://goo.gl/100ZG",
-          30,
-          "Well, since you've been talking to a computer this whole time, "
-          "how about a knock-knock joke?",
-          "Knock, Knock.",
-          5,
-          "(Who's there?)",
-          "Disco.",
-          5,
-          "(disco who?)",
-          ]
-
-SCRIPT_MINE = ["hi brb",
-               5,
-               "ok back",
-               "18 f usa",
-               2,
-               "im horny",
-               "r u?",
-               3,
-               "want 2 c me?",
-               8,
-               "ok heres my pic",
-               "http://goo.gl/KpG8H",
-               2,
-               "u like it?",
-               10,
-               "So, actually I'm a programmer.",
-               "My program gets girls to come to you.",
-               "Want it?",
-               10,
-               "You can find it at http://goo.gl/W6crl",
-               20,
-               "You can email me: omegleuser {dot} 22334 {at} gmail {dot} com "
-               "(also my MSN Messenger ID).",
-               "My skype name is the same without the @gmail.com bit.",
-               "You'll have to replace the ' {dot} ' with a . "
-               "and the ' {at} ' with a @",
-               "Feel free to contact me.",
-               "I can also write you your own custom program.",
-               "One last thing, I'm a dude :) (and a good programmer).",
-               30,
-               "Wow, you're still here?",
-               "If you're just looking for someone to talk to, try Blurrypeople: "
-               "http://goo.gl/100ZG",
-               30,
-               "Well, since you've been talking to a computer this whole time, "
-               "how about a knock-knock joke?",
-               "Knock, Knock.",
-               5,
-               "(Who's there?)",
-               "Disco.",
-               5,
-               "(disco who?)",
-               ]
 
 """Conversation script as a list.
 Each list element is either a message to send or a pause.
@@ -253,7 +168,7 @@ class ConvoThread(threading.Thread):
     
     """A single conversation with a stranger"""
     
-    def __init__(self, script, finished_event=None, recaptcha_event=None, print_convo=True):
+    def __init__(self, script, recaptcha_event=None, print_convo=True):
         """Make a conversation and wait for the stranger to say something.
         
         @param script: Script to send to Omegle
@@ -270,7 +185,7 @@ class ConvoThread(threading.Thread):
         """Fire when the stranger has started chatting."""
         self.chat.keystrokeDelay = KEYSTROKEDELAY
         handler = HwEventHandler(self.start_event, self, 
-                                 print_convo=print_convo, 
+                                 print_messages=print_convo, 
                                  recaptcha_event=recaptcha_event)
         self.chat.connect_events(handler)
         self._stop = threading.Event() 
@@ -279,50 +194,52 @@ class ConvoThread(threading.Thread):
         self.print_convo = print_convo
         """True if the convo is to be printed to stdout"""
         #Fire when convo is done
-        self.finished_event = finished_event
-        """Fires when the convo is done"""
         self.recaptcha_event = recaptcha_event
         """Set if a recaptcha is required"""
     
     def run(self):
         """Send a sequence of messages to the stranger when he's ready."""
-        if self.print_convo: print "Starting a conversation."
-        #Start the chat
-        self.chat.connect()
-        #Wait for him
-        self.start_event.wait(BOREDOM_TOL)
-        #Check if we actually started
-        if not self.start_event.is_set():
-            #Got bored
-            if self.print_convo: 
-                print"[%s] Got bored."%self.chat.id
-                print"[%s] Stranger took too long"%self.chat.id
-            if self._is_stopped() is False:
-                if DEBUG: print "Disconnecting"
-                self.chat.disconnect()
-            if self.print_convo: print "Conversation Terminated."
-            self.stop()
-            self.finish_event.set()
-            
-        if not self._is_stopped():
-            server_log("startchat")
-        #Start sending lines
-        for line in self.script:
-        #Don't bother if we've stopped
+        #Main thread loop
+        while self._stop.is_set() is False:
+            if self.print_convo: print "Starting a conversation."
+            #Start the chat
+            self.chat.connect(reconnect = True)
+
+            #Wait for him
+            self.start_event.wait(BOREDOM_TOL)
+            #Check if we actually started
+            if not self.start_event.is_set():
+                #Got bored
+                if self.print_convo: 
+                    print"[%s] Stranger took too long."%self.chat.id
+                    server_log("gotbored")
+                if self._is_stopped() is False:
+                    if DEBUG: print "Disconnecting."
+                    self.chat.disconnect()
+                if self.print_convo: print "Conversation Terminated."
+                continue
+          
             if self._is_stopped():
-                break
-            if isinstance(line, basestring):
-                if self.print_convo: print "[%s] Spambot: %s"%(self.chat.id, line)
-                self.chat.say(line)
-            elif isinstance(line,Number):
-                if DEBUG: print "Wating %s seconds"%str(line)
-                sleep(line)
-        #Don't disconnect for a while
-        self._wait_for_stop(FINISHDELAY)
-        if not self._is_stopped():
-            self.chat.disconnect()
-            if self.print_convo: print "[%s] Spambot disconnected."%self.chat.id
-            self.stop()
+                continue
+                
+            server_log("startchat")
+            #Start sending lines
+            for line in self.script:
+            #Don't bother if we've stopped
+                if self._is_stopped():
+                    break
+                if isinstance(line, basestring):
+                    if self.print_convo: print "[%s] Spambot: %s"%(self.chat.id, line)
+                    self.chat.say(line)
+                elif isinstance(line,Number):
+                    if DEBUG: print "Wating %s seconds"%str(line)
+                    sleep(line)
+            
+            #Don't disconnect for a while
+            self._wait_for_stop(FINISHDELAY)
+            if not self._is_stopped():
+                if self.print_convo: print "[%s] Spambot disconnected."%self.chat.id
+                self.stop()
         
         #Fire the event and exit
         if self.finished_event: self.finished_event.set()
@@ -368,7 +285,8 @@ def main():
     #Gets set when a recaptcha is required
     recaptcha_event = threading.Event()
     #Make a thread for my script
-    threads.append((ConvoThread(SCRIPT_MINE, 
+    
+    threads.append((ConvoThread(get_my_script(), 
                                 finished_event=finished_event, 
                                 recaptcha_event=recaptcha_event, 
                                 print_convo=ONLY_MINE), 
@@ -383,21 +301,26 @@ def main():
                         service, asl))
     
     #Main program loop
+    for thread in threads:
+        thread[0].start()
     while recaptcha_event.is_set() is False:
-        if not threads[0][0].is_alive():
-            threads[0].start()
+        #Clear if we need to restart a thread
+        if finished_event.is_set(): finished_event.clear()
+        print "1" + str(threads[0][0])
+        if threads[0][0].is_alive() is False:
+            print "2" + str(threads[0][0])
+            threads[0][0].join()
+            print "2" + str(threads[0][0])
+            threads[0][0].start()
         for thread in threads[1:]:
-            if not thread.is_alive():
+            if thread[0].is_alive() is False:
                 server_log("start", value="%s-%s"%())
-                thread.start()
-        finished_event.wait(FINISHDELAY)
+                thread[0].start()
+        recaptcha_event.wait()
     server_log("Recaptcha")
     print "Omegle has detected spam.  Please press [Enter]."
     return
-        
-        
 
-        
         
 def server_log(action, value=""):
     """Log an action to the server.
@@ -413,7 +336,10 @@ def server_log(action, value=""):
     return
 
 def get_his_script():
-    TODO: Finish This
+    return srscript.make_his(silent=RUN_SILENT)
+
+def get_my_script():
+    return srscript.make_mine()
     
 if __name__ == '__main__':
     main()
