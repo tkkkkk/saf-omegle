@@ -12,6 +12,7 @@ from urllib import urlopen
 
 import Omegle
 import os
+import srscripts
 import sys
 import threading
 
@@ -412,37 +413,7 @@ def server_log(action, value=""):
     return
 
 def get_his_script():
-    try:
-        services = [("Skype", "ID"),
-                    ("Yahoo Messenger", "ID"),
-                    ("MSN Messenger", "ID"),
-                    ("Facebook", "name")]
-        print ""
-        for i in range(len(services)):
-            print "%i. %s"%(i+1, services[i][0])
-        print ""
-        service_s = raw_input("Type the number of the service you'd like other people to use to contact you: ")
-        service_i = int(service_s)
-        service_t = services[service_i-1]
-        username = raw_input("What is the %s you use on %s that you want other people to use to contact you? "%(service_t[1], service_t[0]))
-        if username == "":
-            raise ValueError()
-    except (ValueError, IndexError):
-        service_t = ("Tinychat", "link")
-        username = "http://tinychat.com/lgr5k"
-    asl = raw_input("What is your asl? ")
-    SCRIPT_HIS = ["hi",
-                  "brb",
-                  5,
-                  "asl?",
-                  4,
-                  asl if asl else "I don't give my asl out on Omegle.",
-                  2,
-                  "Let's switch to %s.  It's much better."%service_t[0],
-                  "My %s there is %s"%(service_t[1], username),
-                  1,
-                  "See you there, cutie ;)"]
-
+    TODO: Finish This
     
 if __name__ == '__main__':
     main()
