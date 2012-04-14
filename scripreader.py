@@ -302,6 +302,8 @@ def main():
                 server_log("versionmismatch", VERSION)
                 print "You have an outdated version.  Please download a new one " + \
                       "from %s.\nHit [Enter] to terminate this program."%UPDATE_URL
+                import webbrowser
+                webbrowser.open_new(UPDATE_URL)
                 if not RUN_SILENT:
                     raw_input()
                 return
