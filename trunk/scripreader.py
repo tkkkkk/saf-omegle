@@ -44,10 +44,10 @@ KEYSTROKEDELAY = 0.2
 """Time it takes to tap a key"""
 
 ONLY_MINE = True
-#ONLY_MINE = False
+ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
-RUN_SILENT = False
+RUN_SILENT = True
 """Run without interaction"""
 
 """Conversation script as a list.
@@ -227,7 +227,7 @@ class ScriptThread(threading.Thread):
                 if self.disconnected.is_set() is False:
                     if DEBUG: print "Disconnecting."
                     self.chat.disconnect()
-                    print "[%s] Spambot disconnected."%self.chat.id
+                    if self.print_convo: print "[%s] Spambot disconnected."%self.chat.id
                     self.disconnected.set()
                 if self.print_convo: print "Conversation terminated.\n"
                 #Don't bother with the rest.
@@ -258,7 +258,7 @@ class ScriptThread(threading.Thread):
             
             #Don't disconnect for a while
             if self.disconnected.is_set() is False:
-                print "[%s] Finished.  Giving stranger %d seconds for last words."%(self.chat.id, FINISHDELAY)
+                if self.print_convo: print "[%s] Finished.  Giving stranger %d seconds for last words."%(self.chat.id, FINISHDELAY)
             self.disconnected.wait(FINISHDELAY)
             if self.disconnected.is_set() is False:
                 if self.print_convo: print "[%s] Spambot disconnected."%self.chat.id
