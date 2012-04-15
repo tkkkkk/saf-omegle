@@ -61,7 +61,7 @@ base_url = "http://littlesitetomakemoney.appspot.com"
 LOG_URL = base_url + "/log"
 """URL to open when we start conversing"""
 
-VERSION = "71"
+VERSION = "72"
 """Version of the software"""
 VERSION_URL = base_url + "/version"
 """URL to get the version from"""
@@ -307,8 +307,9 @@ def main():
     threads.append(my_thread)
 
     
-    #First check the version of the spambot
-    if not ONLY_MINE:
+    #First check the version of the spambot if it's for someone else
+    #Don't bother if we're running silent
+    if not (ONLY_MINE or RUN_SILENT):
         try:
             version = urlopen(VERSION_URL).read()
             if VERSION != version:
