@@ -43,7 +43,7 @@ FINISHDELAY = 30
 KEYSTROKEDELAY = 0.2
 """Time it takes to tap a key"""
 
-ONLY_MINE = False
+ONLY_MINE = True
 #ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
