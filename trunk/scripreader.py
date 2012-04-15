@@ -50,7 +50,6 @@ ONLY_MINE = True
 RUN_SILENT = False
 """Run without interaction"""
 
-
 """Conversation script as a list.
 Each list element is either a message to send or a pause.
 If the element is a string it will be sent as a message.
