@@ -258,7 +258,8 @@ class ScriptThread(threading.Thread):
                 break
             
             #Don't disconnect for a while
-            print "[%s] Waiting for stranger to disconnect."%self.chat.id
+            if self.disconnected.is_set() is False:
+                print "[%s] Finished.  Giving stranger %d seconds for last words."%(self.chat.id, FINISHDELAY)
             self.disconnected.wait(FINISHDELAY)
             if self.disconnected.is_set() is False:
                 if self.print_convo: print "[%s] Spambot disconnected."%self.chat.id
