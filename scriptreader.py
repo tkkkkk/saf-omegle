@@ -61,7 +61,7 @@ base_url = "http://littlesitetomakemoney.appspot.com"
 LOG_URL = base_url + "/log"
 """URL to open when we start conversing"""
 
-VERSION = "46"
+VERSION = "71"
 """Version of the software"""
 VERSION_URL = base_url + "/version"
 """URL to get the version from"""
