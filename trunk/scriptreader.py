@@ -47,7 +47,7 @@ ONLY_MINE = True
 ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
-RUN_SILENT = True
+RUN_SILENT = False
 """Run without interaction"""
 
 """Conversation script as a list.
@@ -61,7 +61,7 @@ base_url = "http://littlesitetomakemoney.appspot.com"
 LOG_URL = base_url + "/log"
 """URL to open when we start conversing"""
 
-VERSION = "72"
+VERSION = "73"
 """Version of the software"""
 VERSION_URL = base_url + "/version"
 """URL to get the version from"""
