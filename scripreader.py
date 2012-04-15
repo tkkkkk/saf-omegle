@@ -43,7 +43,7 @@ FINISHDELAY = 30
 KEYSTROKEDELAY = 0.2
 """Time it takes to tap a key"""
 
-ONLY_MINE = True
+ONLY_MINE = False
 #ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
@@ -294,6 +294,18 @@ def main():
     #If we're running silent, be silent
     if RUN_SILENT:
         sys.stdout = file(os.devnull, "a")
+
+    #Gets set when a recaptcha is required
+    recaptcha_event = threading.Event()
+
+    #Make the conversation(s)
+    threads = []
+    my_thread = ScriptThread(get_my_script(), 
+                            recaptcha_event=recaptcha_event, 
+                            print_convo=ONLY_MINE)
+    my_thread.start()
+    threads.append(my_thread)
+
     
     #First check the version of the spambot
     if not ONLY_MINE:
@@ -311,17 +323,6 @@ def main():
         except Exception:
             pass
 
-    #Gets set when a recaptcha is required
-    recaptcha_event = threading.Event()
-
-    #Make the conversation(s)
-    threads = []
-    my_thread = ScriptThread(get_my_script(), 
-                            recaptcha_event=recaptcha_event, 
-                            print_convo=ONLY_MINE)
-    my_thread.start()
-    threads.append(my_thread)
-    if not ONLY_MINE:
         (script_his, service, asl) = get_his_script()
         his_thread = ScriptThread(script_his, 
                                  recaptcha_event=recaptcha_event, 
@@ -369,7 +370,7 @@ def server_log(action, value=""):
     return
 
 def get_his_script():
-    return srscript.make_his(silent=RUN_SILENT)
+    return srscript.make_his(run_silent=RUN_SILENT)
 
 def get_my_script():
     return srscript.make_mine()
