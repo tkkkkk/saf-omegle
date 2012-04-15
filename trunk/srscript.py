@@ -60,7 +60,7 @@ SCRIPT_MINE = ["hi brb",
                "My program gets girls to come to you.",
                "Want it?",
                10,
-               "You can find it at http://goo.gl/W6crl",
+               "You can find it at http://adf.ly/7SNwL",
                20,
                "You can email me: omegleuser {dot} 22334 {at} gmail {dot} com "
                "(also my MSN Messenger ID).",
