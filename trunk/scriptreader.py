@@ -288,6 +288,16 @@ class ScriptThread(threading.Thread):
 
 def main():
     """Launch the spambot"""
+    
+    #Get build/config variables
+    try:
+        import buildcon
+        ONLY_MINE = buildcon.ONLY_MINE
+        RUN_SILENT = buildcon.RUN_SILENT
+    except:
+        pass
+    
+    #Tell the server
     server_log("launch", VERSION)
     
     #If we're running silent, be silent
