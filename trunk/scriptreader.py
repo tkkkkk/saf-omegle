@@ -44,7 +44,7 @@ KEYSTROKEDELAY = 0.2
 """Time it takes to tap a key"""
 
 ONLY_MINE = True
-ONLY_MINE = False
+#ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
 RUN_SILENT = False
@@ -277,7 +277,6 @@ class ScriptThread(threading.Thread):
 
     def stop(self):
         """Stop the thread and end the convo."""
-        print "Got Stop"
         self._stop.set()
         
     def _is_stopped(self):
@@ -350,7 +349,7 @@ def main():
     
     #Check for a captcha.  At the moment, if this isn't set, there's a problem.
     if recaptcha_event.is_set(): 
-        server_log("Recaptcha", value="%s-%s"%(service, asl))
+        if not ONLY_MINE: server_log("Recaptcha", value="%s-%s"%(service, asl))
         print "Omegle has detected spam.  Please press [Enter]."
         if not RUN_SILENT:
             raw_input()
