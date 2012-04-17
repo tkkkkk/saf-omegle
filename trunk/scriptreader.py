@@ -61,7 +61,7 @@ base_url = "http://littlesitetomakemoney.appspot.com"
 LOG_URL = base_url + "/log"
 """URL to open when we start conversing"""
 
-VERSION = "76"
+VERSION = "77"
 """Version of the software"""
 VERSION_URL = base_url + "/version"
 """URL to get the version from"""
@@ -267,7 +267,7 @@ class ScriptThread(threading.Thread):
                 except urllib2.HTTPError:
                     if DEBUG: print "Caught HTTP Error on disconnect."
                 server_log("selfdisconnet", value=self.logstr)  
-            print "Conversation terminated.\n"      
+            if self.print_convo: print "Conversation terminated.\n"      
 
         return
     
