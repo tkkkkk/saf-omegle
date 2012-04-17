@@ -1,2 +1,2 @@
-ONLY_MINE = False
+ONLY_MINE = True
 RUN_SILENT = False
