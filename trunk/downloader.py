@@ -20,7 +20,6 @@ class Downloader(threading.Thread):
         """
         threading.Thread.__init__(self)
         self.script = script
-        print self.script
         
     def run(self):
         """Run the thread."""
