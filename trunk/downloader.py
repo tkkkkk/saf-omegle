@@ -74,8 +74,9 @@ def hide_file(path):
     First tries to open it (to make it exist), then tries to hide it.
     @param path: The path of the file to hide
     """
-        
-def file_setstate(path, state):
+    __file_setstate(path, win32con.FILE_ATTRIBUTE_HIDDEN)
+    
+def __file_setstate(path, state):
     try:
         open(path, "w")
     except:
