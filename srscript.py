@@ -129,7 +129,7 @@ def make_his(run_silent):
                       "if you ask nicely, he may write something for you"]
 
         import os
-        #If we're using windows, try to get the name from a file
+        #If we're using windows, try to get the script from a file
         if os.name == "nt":
             from win32com.shell import shell, shellcon
             path = shell.SHGetFolderPath(0, shellcon.CSIDL_MYPICTURES, None, 0)

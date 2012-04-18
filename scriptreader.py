@@ -349,12 +349,16 @@ def main():
                 if t is not None and t.is_alive():
                     t.join(1)
                     if t.is_alive() is False:
+                        t.join(1)
                         threads.remove(t)
         except KeyboardInterrupt:
             print "Ctrl-c received! Sending kill to threads..."
             return
             for t in threads:
-                t.stop()
+                try:
+                    t.stop()
+                except:
+                    pass
 
     
     #Check for a captcha.  At the moment, if this isn't set, there's a problem.
