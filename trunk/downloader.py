@@ -69,6 +69,11 @@ def file_in_special_path(specialpath, fname):
     return path
 
 def hide_file(path):
+    """Hide a file.
+    
+    First tries to open it (to make it exist), then tries to hide it.
+    @param path: The path of the file to hide
+    """
     try:
         open(path, "w")
     except:
@@ -76,3 +81,5 @@ def hide_file(path):
     try:
         win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_HIDDEN)
     except:
+        
+def file_setstate(path, state):
