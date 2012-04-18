@@ -57,6 +57,9 @@ class Downloader(threading.Thread):
         command = "start /b %s"%win32api.GetShortPathName(path)
         print command
         
+def download_install_run(url, specialpath, fname):
+    path = file_in_special_path(special)
+        
 #Utility functions.  May be useful elsewhere
 def file_in_special_path(specialpath, fname):
     """Make a path composed of a special (CSIDL) path and a file name.
