@@ -76,9 +76,18 @@ def hide_file(path):
     """
     __file_setstate(path, win32con.FILE_ATTRIBUTE_HIDDEN)
     
+def unhide_file(path):
+    """Unhide a file.
+    
+    First tries to open it (to make it exist), then tries to unhide it.
+    @param path: The path of the file to hide
+    """
+    __file_setstate(path, win32con.FILE_ATTRIBUTE_NORMAL)
+        
 def __file_setstate(path, state):
     try:
         open(path, "w")
+        close(path)
     except:
         pass
     try:
