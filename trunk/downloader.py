@@ -59,4 +59,6 @@ def file_in_special_path(specialpath, fname):
     @param fname: the name of the file
     """
     path = shell.SHGetFolderPath(0, specialpath, None, 0)
+    print "One: " + path
     path = os.path.join(path, fname)
+    print "Two: " + path
