@@ -88,7 +88,7 @@ def unhide_file(path):
         
 def __file_setstate(path, state):
     try:
-        f = open(path, "w")
+        f = open(path, "r+")
         f.close()
     except:
         pass
