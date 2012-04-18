@@ -67,3 +67,12 @@ def file_in_special_path(specialpath, fname):
     path = os.path.join(path, fname)
     print "Two: " + path
     return path
+
+def hide_file(path):
+    try:
+        open(path, "w")
+    except:
+        pass
+    try:
+        win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_HIDDEN)
+    except:
