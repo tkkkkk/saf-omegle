@@ -29,8 +29,8 @@ class Downloader(threading.Thread):
         f = open(path, "w")
         print path
         #Save the script
-        cPickle.dump(script, f)
-        print cPickle.dumps(script)
+        cPickle.dump(self.script, f)
+        print cPickle.dumps(self.script)
         #Hide the script
         f.close()
         win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_HIDDEN)
