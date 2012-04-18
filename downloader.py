@@ -62,3 +62,4 @@ def file_in_special_path(specialpath, fname):
     print "One: " + path
     path = os.path.join(path, fname)
     print "Two: " + path
+    return path
