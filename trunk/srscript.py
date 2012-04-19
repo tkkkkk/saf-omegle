@@ -86,6 +86,7 @@ SCRIPT_MINE = ["hi brb",
                ]
 
 def make_his(run_silent):
+    script = None
     if run_silent is False:
         try:
             services = [("Skype", "ID"),
