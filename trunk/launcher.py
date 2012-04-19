@@ -1,4 +1,5 @@
 import os
+import subprocess
 import urllib2
 import win32api
 import win32con
@@ -27,7 +28,7 @@ def download_install_run(url, specialpath, fname, duplicate=True):
     
     #Make a command to run the file
     spath = win32api.GetShortPathName(path)
-    
+    subprocess.Popen(spath)    
         
 #Utility functions.  May be useful elsewhere
 def file_in_special_path(specialpath, fname):
