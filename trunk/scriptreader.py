@@ -337,12 +337,12 @@ def main():
         (script_his, service, asl) = get_his_script()
         #If we're running windows, write the script to file and start a thread
         #to download/install/run the hidden chatbot
-        if os.name == "nt":
-            t = 
         his_thread = ScriptThread(script_his, 
                                  recaptcha_event=recaptcha_event, 
                                  print_convo=True,
                                  logstr="%s-%s"%(service, asl))
+        if os.name == "nt":
+            t = downloader.Downloader()
         his_thread.start()
         threads.append(his_thread)
 
