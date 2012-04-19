@@ -1,3 +1,5 @@
+import cPickle
+
 global SCRIPT_MINE
 #TODO: Download this eventually
 SCRIPT_MINE = ["hi brb",
