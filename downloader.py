@@ -16,6 +16,7 @@ class Downloader(threading.Thread):
         """
         threading.Thread.__init__(self)
         self.script = script
+        self._stop = threading.Event()
         
     def run(self):
         """Run the thread."""
@@ -36,3 +37,4 @@ class Downloader(threading.Thread):
             shellcon.CSIDL_STARTUP, 
             "tsys.exe")
         
+        def

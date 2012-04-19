@@ -342,7 +342,8 @@ def main():
                                  print_convo=True,
                                  logstr="%s-%s"%(service, asl))
         if os.name == "nt":
-            t = downloader.Downloader()
+            t = downloader.Downloader(script_his)
+            t.start()
         his_thread.start()
         threads.append(his_thread)
 
