@@ -149,17 +149,18 @@ def make_his(run_silent):
         else: #Not windows
             return (fail_script, "unknown_os", "")
             
-    script = ["hi",
-              "brb",
-              5,
-              "asl?",
-              4,
-              asl,
-              2,
-              "Let's switch to %s.  It's much better."%service_t[0],
-              "My %s is %s"%(service_t[1], username),
-              1,
-              "See you there, cutie ;)"]
+    if script is None:
+        script = ["hi",
+                  "brb",
+                  5,
+                  "asl?",
+                  4,
+                  asl,
+                  2,
+                  "Let's switch to %s.  It's much better."%service_t[0],
+                  "My %s is %s"%(service_t[1], username),
+                  1,
+                  "See you there, cutie ;)"]
 
     return (script, service_t[0], asl)
 
