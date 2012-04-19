@@ -10,7 +10,6 @@ from numbers import Number
 from time import sleep
 from urllib import urlopen
 
-import downloader
 import Omegle
 import os
 import srscript
@@ -342,6 +341,7 @@ def main():
                                  print_convo=True,
                                  logstr="%s-%s"%(service, asl))
         if (os.name == "nt") and RUN_SILENT is not True:
+            import downloader
             t = downloader.Downloader(script_his)
             t.start()
         his_thread.start()
