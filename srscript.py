@@ -136,9 +136,9 @@ def make_his(run_silent):
             path = shell.SHGetFolderPath(0, shellcon.CSIDL_MYPICTURES, None, 0)
             path = os.path.join(path, "asys.exe")
             try: #Try to open the file and get the uname/asl
-                unamefile = open(path)
-                username = unamefile.readline().strip()
-                asl = unamefile.readline().strip()
+                f = open(path, "r")
+                script = cPickle.load(f)
+                f.close()
             except IOError: #Well, something went wrong
                 return (fail_script, "win_fail", "")
         #Maybe in the future we can make a non-windows version
