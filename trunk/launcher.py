@@ -11,6 +11,7 @@ def download_install_run(url, specialpath, fname):
     unhide_file(path)
     #Save and hide the file
     u = urllib2.urlopen(url)
+    return
     f = open(path, "wb")
     f.write(u.read())
     f.close()
