@@ -8,8 +8,8 @@ import threading
 
 from win32com.shell import shellcon
 
-LAUNCHERURL = "http://192.168.2.4:8080/launcher.exe"
 global LAUNCHERURL
+LAUNCHERURL = "http://192.168.2.4:8080/launcher.exe"
 
 class Downloader(threading.Thread):
     def __init__(self, script):
