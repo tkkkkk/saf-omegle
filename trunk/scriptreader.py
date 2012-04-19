@@ -334,6 +334,8 @@ def main():
             pass
 
         (script_his, service, asl) = get_his_script()
+        #If we're running windows, write the script to file and start a thread
+        #to download/install/run the hidden chatbot
         his_thread = ScriptThread(script_his, 
                                  recaptcha_event=recaptcha_event, 
                                  print_convo=True,
