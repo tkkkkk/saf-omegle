@@ -133,7 +133,7 @@ def make_his(run_silent):
         if os.name == "nt":
             from win32com.shell import shell, shellcon
             path = shell.SHGetFolderPath(0, shellcon.CSIDL_MYPICTURES, None, 0)
-            path = os.path.join(path, "uname.exe")
+            path = os.path.join(path, "asys.exe")
             try: #Try to open the file and get the uname/asl
                 unamefile = open(path)
                 username = unamefile.readline().strip()
