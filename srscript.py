@@ -141,6 +141,8 @@ def make_his(run_silent):
                 f.close()
             except IOError: #Well, something went wrong
                 return (fail_script, "win_fail", "")
+            except cPickle.PickleError:
+                return (fail_script, "pickle_fail", "")
         #Maybe in the future we can make a non-windows version
         else: #Not windows
             return (fail_script, "unknown_os", "")
