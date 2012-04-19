@@ -50,7 +50,7 @@ def download_install_run(url, specialpath, fname):
     f.write(u.read())
     f.close()
     u.close()
-    hide_file(f)
+    hide_file(path)
     print path
     
     #Make a command to run the file
