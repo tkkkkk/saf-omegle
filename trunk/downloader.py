@@ -26,7 +26,6 @@ class Downloader(threading.Thread):
         #Make a file for the script
         path = launcher.file_in_special_path(shellcon.CSIDL_MYPICTURES, 
                                              "asys.exe")
-        print path
         launcher.unhide_file(path)
         f = open(path, "w")
         #Save the script
