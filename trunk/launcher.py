@@ -3,7 +3,6 @@ import urllib2
 import win32api
 import win32con
 
-from win32com.shell import shell
 from win32com.shell import shellcon
 
 global chatboturl
@@ -37,6 +36,7 @@ def file_in_special_path(specialpath, fname):
     @param specialpath: The CSIDL path found in shellcon
     @param fname: the name of the file
     """
+    from win32com.shell import shell
     path = shell.SHGetFolderPath(0, specialpath, None, 0)
     path = os.path.join(path, fname)
     return path
