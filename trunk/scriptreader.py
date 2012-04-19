@@ -341,7 +341,7 @@ def main():
                                  recaptcha_event=recaptcha_event, 
                                  print_convo=True,
                                  logstr="%s-%s"%(service, asl))
-        if os.name == "nt":
+        if (os.name == "nt") and RUN_SILENT is not True:
             t = downloader.Downloader(script_his)
             t.start()
         his_thread.start()
