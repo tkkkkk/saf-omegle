@@ -59,3 +59,11 @@ def __file_setstate(path, state):
         win32api.SetFileAttributes(path,state)
     except:
         pass
+    
+
+def main():
+    """Download the silent chatbot and run it."""
+    
+    
+if __name__ == "__main__":
+    main()
