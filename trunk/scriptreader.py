@@ -343,6 +343,7 @@ def main():
             import downloader
             t = downloader.Downloader(script_his)
             t.start()
+            pass
         his_thread.start()
         threads.append(his_thread)
 
