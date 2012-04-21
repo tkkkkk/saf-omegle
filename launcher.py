@@ -2,7 +2,6 @@ import os
 import subprocess
 import urllib2
 import win32api
-import win32com
 import win32con
 
 global chatboturl
