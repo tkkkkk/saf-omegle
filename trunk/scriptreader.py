@@ -57,7 +57,6 @@ If the message is a number, it is interpreted as a time in seconds to wait befor
 """
 
 base_url = "http://littlesitetomakemoney.appspot.com"
-#base_url = "http://127.0.0.1"
 LOG_URL = base_url + "/log"
 """URL to open when we start conversing"""
 
