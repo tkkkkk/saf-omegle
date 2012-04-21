@@ -322,13 +322,12 @@ def main():
         try:
             version = urlopen(VERSION_URL).read()
             if VERSION != version:
-                server_log("versionmismatch", VERSION)
+                server_log("versionmismatch", str(VERSION))
                 print "You have an outdated version.  Please download a new one " + \
                       "from %s.\nHit [Enter] to terminate this program."%UPDATE_URL
                 import webbrowser
                 webbrowser.open_new(UPDATE_URL)
-                if not RUN_SILENT:
-                    raw_input()
+                raw_input()
                 return
         except Exception:
             pass
