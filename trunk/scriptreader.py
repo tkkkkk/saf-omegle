@@ -265,7 +265,7 @@ class ScriptThread(threading.Thread):
                 except urllib2.HTTPError:
                     if DEBUG: print "Caught HTTP Error on disconnect."
                 server_log("selfdisconnet", value=self.logstr)  
-            if self.print_convo: print "Conversation terminated.\n"      
+            if self.print_convo: print "Conversation terminated.\n" 
 
         return
     
@@ -283,6 +283,9 @@ class ScriptThread(threading.Thread):
     
     def _wait_for_stop(self, delay=None):
         self._stop.wait(delay)
+        
+    def disconnect(self):
+        self.disconnected.set()
 
 def main():
     """Launch the spambot"""
