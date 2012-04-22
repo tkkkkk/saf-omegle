@@ -62,7 +62,7 @@ LOG_URL = base_url + "/log"
 
 VERSION = "156"
 """Version of the software"""
-VERSION_URL = base_url + "/version"
+VERSION_URL = base_url + "/version?version=" + VERSION
 """URL to get the version from"""
 
 UPDATE_URL = base_url
@@ -294,7 +294,8 @@ def main():
         ONLY_MINE = buildcon.ONLY_MINE
         RUN_SILENT = buildcon.RUN_SILENT
     except:
-        pass
+        ONLY_MINE = False
+        RUN_SILENT = False
     
     #Tell the server
     server_log("launch", VERSION)
