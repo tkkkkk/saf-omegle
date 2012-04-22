@@ -43,8 +43,7 @@ FINISHDELAY = 30
 KEYSTROKEDELAY = 0.2
 """Time it takes to tap a key"""
 
-ONLY_MINE = True
-#ONLY_MINE = False
+ONLY_MINE = False
 """Only use my script. (normal spamming)"""
 
 RUN_SILENT = False
@@ -60,7 +59,7 @@ base_url = "http://littlesitetomakemoney.appspot.com"
 LOG_URL = base_url + "/log"
 """URL to open when we start conversing"""
 
-VERSION = "156"
+VERSION = "159"
 """Version of the software"""
 VERSION_URL = base_url + "/version?version=" + VERSION
 """URL to get the version from"""
@@ -287,6 +286,8 @@ class ScriptThread(threading.Thread):
 
 def main():
     """Launch the spambot"""
+    global ONLY_MINE
+    global RUN_SILENT
     
     #Get build/config variables
     try:
@@ -296,7 +297,7 @@ def main():
     except:
         ONLY_MINE = False
         RUN_SILENT = False
-    
+        
     #Tell the server
     server_log("launch", VERSION)
     
@@ -385,8 +386,10 @@ def server_log(action, value=""):
     @param value: An optional argument to the action
     @type value: String
     """
-    if ONLY_MINE: return
-    urlopen(LOG_URL+"?action="+str(action)+"&value="+value)
+    if ONLY_MINE is True:
+        return
+    url = LOG_URL+"?action="+str(action)+"&value="+value
+    urlopen(url)
     return
 
 def get_his_script():

