@@ -5,7 +5,7 @@ import time
 import urllib
 import urllib2
 
-user_agent = "Mozilla/5.1 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.1.3) Gecko/20090824 Firefox/3.5.4"
+user_agent = "Mozilla/6.1 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.1.5) Gecko/20090825 Firefox/3.5.4"
 """Bogus user agent.  *May* be somethnig omegle uses for bot detection."""
 
 class EventHandler:
