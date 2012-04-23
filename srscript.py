@@ -62,7 +62,7 @@ SCRIPT_MINE = ["hi brb",
                "My program gets girls to come to you.",
                "Want it?",
                10,
-               "You can find it at http://adf.ly/7SNwL",
+               "You can find it at http://goo.gl/KpG8H",
                20,
                "You can email me: omegleuser {dot} 22334 {at} gmail {dot} com "
                "(also my MSN Messenger ID).",
@@ -86,16 +86,6 @@ SCRIPT_MINE = ["hi brb",
                5,
                "(disco who?)",
                ]
-
-xSCRIPT_MINE = ["hi brb",
-               10,
-               "18 f usa",
-               "wanna see me naked?",
-               10,
-               "i put pictures of me here",
-               "http://goo.gl/QPqt2",
-               10,
-               "u like it?"]
 
 def make_his(run_silent):
     script = None
