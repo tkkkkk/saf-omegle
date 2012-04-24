@@ -89,6 +89,23 @@ SCRIPT_MINE = ["hi brb",
 
 SCRIPT_MINE = ["hi brb",
                6,
+               "back",
+               6,
+               "18 f usa",
+               "wanna trade pix?",
+               5,
+               "ok heres mine",
+               "http://goo.gl/GrnTX",
+               2,
+               "like it?",
+               5,
+               "Well, just to avoid confusion, I'm not actually a little girl.",
+               "I'm the guy who wrote this bot.",
+               2,
+               "Want your own?  It's actually working pretty well.",
+               "I've one that'll get the people you want to talk to you.",
+               1,
+               "http://goo.gl/RZZXR <-- You can find it there.",
                ]
 
 def make_his(run_silent):
