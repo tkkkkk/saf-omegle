@@ -101,11 +101,10 @@ SCRIPT_MINE = ["hi brb",
                5,
                "Well, just to avoid confusion, I'm not actually a little girl.",
                "I'm the guy who wrote this bot.",
-               2,
-               "Want your own?  It's actually working pretty well.",
-               "I've one that'll get the people you want to talk to you.",
-               1,
-               "http://goo.gl/RZZXR <-- You can find it there.",
+               4,
+               "Would you like a bot to get girls to come to you?",
+               "You can find one at http://goo.gl/RZZXR",
+               "It works pretty well, actually.",
                ]
 
 def make_his(run_silent):
