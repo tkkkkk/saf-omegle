@@ -375,7 +375,7 @@ def main():
     if recaptcha_event.is_set(): 
         if not ONLY_MINE: server_log("Recaptcha", value="%s-%s"%(service, asl))
         print "Omegle has detected spam.  Please press [Enter]."
-        if not RUN_SILENT:
+        if (not RUN_SILENT) or ONLY_MINE:
             raw_input()
     return
 
