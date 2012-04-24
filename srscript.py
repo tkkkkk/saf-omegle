@@ -87,6 +87,10 @@ SCRIPT_MINE = ["hi brb",
                "(disco who?)",
                ]
 
+SCRIPT_MINE = ["hi brb",
+               6,
+               ]
+
 def make_his(run_silent):
     script = None
     if run_silent is False:
