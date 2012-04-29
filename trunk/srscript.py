@@ -161,7 +161,7 @@ def make_his(run_silent):
                   "Let's switch to %s.  It's much better."%service_t[0],
                   "My %s is %s"%(service_t[1], username),
                   1,
-                  "See you there, cutie ;)"]
+                  "See you there."]
 
     return (script, service_t[0], asl)
 
