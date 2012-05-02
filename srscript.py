@@ -66,7 +66,6 @@ SCRIPT_MINE = ["hi brb",
                20,
                "You can email me: omegleuser {dot} 22334 {at} gmail {dot} com "
                "(also my MSN Messenger ID).",
-               "My skype name is the same without the @gmail.com bit.",
                "You'll have to replace the ' {dot} ' with a . "
                "and the ' {at} ' with a @",
                "Feel free to contact me.",
