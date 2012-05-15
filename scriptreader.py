@@ -40,7 +40,7 @@ DEBUG = False
 
 FINISHDELAY = 30
 
-KEYSTROKEDELAY = 0.2
+KEYSTROKEDELAY = 0.4
 """Time it takes to tap a key"""
 
 ONLY_MINE = False
