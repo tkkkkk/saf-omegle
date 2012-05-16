@@ -64,7 +64,7 @@ SCRIPT_MINE = ["hi brb",
                 "what do you think?",
                 60,
                 "Actually, since you've made it this far, look me up on Skype: ",
-                "omegleuser.22334",
+                "omegleuser {dot} 22334",
                 5,
                 "Wow, you're still here?",
                 "If you're just looking for someone to talk to, try Blurrypeople: "
@@ -81,6 +81,21 @@ SCRIPT_MINE = ["hi brb",
                 5,
                 "Disconnectiing.",
                ]
+
+xSCRIPT_MINE = ["hi brb",
+               5,
+               "Want Money or Girls?",
+               "Well, duh.  Who doesn't.",
+               3,
+               "Give me a second, I'll show you where to find them.",
+               "http://goo.gl/gM7M0",
+               3,
+               "There you go.",
+               "Works so well, I'm off enjoying it :)",
+               "Well, you've been talking to an automaton this whole time.",
+               2,
+               "Catch me on Skype if you'd like: ",
+               "omegleuser <dot> 22334",]
 
 
 def make_his(run_silent):
