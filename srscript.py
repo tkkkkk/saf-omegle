@@ -63,6 +63,9 @@ SCRIPT_MINE = ["hi brb",
                 20,
                 "what do you think?",
                 60,
+                "Actually, since you've made it this far, look me up on Skype: ",
+                "omegleuser.22334",
+                5,
                 "Wow, you're still here?",
                 "If you're just looking for someone to talk to, try Blurrypeople: "
                 "http://goo.gl/100ZG",
@@ -76,9 +79,7 @@ SCRIPT_MINE = ["hi brb",
                 5,
                 "(disco who?)",
                 5,
-                "Disconnecting soon.",
-                "Actually, since you've made it this far, look me up on Skype: ",
-                "omegleuser.22334",
+                "Disconnectiing.",
                ]
 
 
