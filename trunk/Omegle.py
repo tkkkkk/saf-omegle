@@ -5,10 +5,13 @@ import time
 import urllib
 import urllib2
 
+#TODO: make debug a function pointer -> debug(chat, str), True for some
+#default or False for quietness
+
 user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.11 Safari/535.19"
 """Bogus user agent.  *May* be somethnig omegle uses for bot detection."""
 
-class EventHandler:
+class EventHandler(object):
     def fire(self,event,chat,var):
         ''' Callback class. Var is info relating to the event.
         If a subclass defines a method defaultEvent, it will be called as defaultEvent(event, chat, var) if no event handler is found for an event.
@@ -62,7 +65,7 @@ class ProxyException(Exception):
                                                           self.proxy)
             
 
-class OmegleChat:
+class OmegleChat(object):
     def __init__(self, _id=None, debug=False, keystrokedelay=0, proxy=None):
         """Make a chat.
         @param _id: ID For the chat
