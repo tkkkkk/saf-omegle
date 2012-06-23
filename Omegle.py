@@ -45,10 +45,25 @@ class UnknownEventException(Exception):
     def __str__(self):
         """Generate a string describing the unhandled event"""
         return "%s [%s]: "%(self.event, self.chat.id) + str(self.var)
+    
+class ProxyException(Exception):
+    """Exception raised when proxy doesn't mask our IP address."""
+    def __init__(self, proxy, own_ip):
+        """
+        Initialize exception
+        proxy: What was used as a proxy
+        our_ip: Our IP and the IP as seen through the proxy.
+        """
+        self.proxy=proxy
+        self.own_ip=own_ip
+    def __str__(self):
+        """Turn the exception into a string."""
+        return "Own IP address %s found using proxy %s."%(self.own_ip, 
+                                                          self.proxy)
             
 
 class OmegleChat:
-    def __init__(self,_id=None,debug=False,keystrokedelay=0):
+    def __init__(self, _id=None, debug=False, keystrokedelay=0, proxy=None):
         """Make a chat.
         @param _id: ID For the chat
         @type _id: String
@@ -56,6 +71,8 @@ class OmegleChat:
         @type debug: Boolean
         @param keystrokedelay: Delay for each keystroke when say()ing
         @type keystrokedelay: Number
+        @param proxy: A proxy through which to connect
+        @type proxy: String
         """
         self.url = "http://cardassia.omegle.com/"
         self.id = _id
@@ -66,12 +83,27 @@ class OmegleChat:
         self.connected = False
         """True while we're connected"""
         self.keystrokeDelay = keystrokedelay
-        """Delay for each keystroke when say()ing.  Set this to 0 do disable.  If nonzero, the appropriate typing events will be sent."""
+        """Delay for each keystroke when say()ing.  
+        Set this to 0 do disable.  
+        If nonzero, the appropriate typing events will be sent."""
         self.debug = debug
 
         jar = cookielib.CookieJar()
         processor = urllib2.HTTPCookieProcessor(jar)
-        self.connector = urllib2.build_opener(processor)#,urllib2.HTTPHandler(debuglevel=1))
+        if proxy is not None: #Include a proxy if we want
+            #Proxy code stolen from kd5pbo's pyproxyfinder
+            #https://code.google.com/p/pyproxyfinder/
+            proxy_handler = urllib2.ProxyHandler({"http": proxy})
+            self.connector = urllib2.build_opener(proxy_handler, processor)
+            #Make sure we're using a proxy
+            own_ip = urllib2.urlopen(
+                "http://api.externalip.net/ip/").read().strip() 
+            proxied_ip = urllib2.urlopen(
+                "http://api.externalip.net/ip/").read().strip()
+            if own_ip == proxied_ip:
+                raise ProxyException(proxy, own_ip)
+        else:
+            self.connector = urllib2.build_opener(processor)
         self.connector.addheaders = [
             ('User-agent',user_agent)
             ]
