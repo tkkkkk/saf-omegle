@@ -101,7 +101,7 @@ class OmegleChat(object):
             #Make sure we're using a proxy
             own_ip = urllib2.urlopen(
                 "http://api.externalip.net/ip/").read().strip() 
-            proxied_ip = urllib2.urlopen(
+            proxied_ip = self.connector.open(
                 "http://api.externalip.net/ip/").read().strip()
             if own_ip == proxied_ip:
                 raise ProxyException(proxy, own_ip)
@@ -160,14 +160,27 @@ class OmegleChat(object):
             if self.debug: print 'Page %s returned %s'%(page,r)
         return r
 
-    def say(self,message):
-        ''' Send a message from the chat '''
+    def say(self,message,event=None):
+        """
+        Send a message from the chat.
+        If an event is passed, instead of sleeping to simulate keystrokes, 
+        wait() will be called on the event with the appropriate timeout.  If 
+        the event fires before the wait times out, the message will not be sent 
+        and False will be returned.  In any other case, True will be returned.
+        """
         if self.keystrokeDelay > 0:
             if self.debug: print "Typing message: %s"%message
             self.typing()
-            time.sleep(len(message) * self.keystrokeDelay)
+            delay = len(message) * self.keystrokeDelay
+            if event is not None: #Wait for the event
+                fired = event.wait(delay)
+                if fired:
+                    return False
+            else: #Just sleep zzz
+                time.sleep(delay)
         if self.debug: print 'Saying message: %s'%message
         self.open_page('send',{'msg':message})
+        return True
 
     def typing(self):
         ''' Tell the stranger we are typing '''
@@ -182,13 +195,11 @@ class OmegleChat(object):
         if self.connected:
             self.terminated.set()
             self.open_page('disconnect',{})
-            self.reactor.kill()
             self.id = None 
             self.connected = False
             if self.reactor.is_alive():
                 self.reactor.kill()
                 self.reactor.join()
-
 
     def connect(self, reconnect=True):
         ''' Start a chat session.
@@ -237,6 +248,7 @@ class _ReactorThread(threading.Thread):
         threading.Thread.__init__(self)
         self.chat = chat
         self._stop = threading.Event()
+        self.daemon = True
         return
     
     def run(self):
