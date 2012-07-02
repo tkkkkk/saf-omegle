@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import ast
+import httplib
 import numbers
 import Omegle
 import Queue
@@ -23,7 +24,7 @@ return a non-zero value to the calling shell.
 VERBOSE=True #Verbose output
 DEBUG=False #Debug output
 KEYSTROKEDELAY=0.5 #Delay between simulated keystrokes
-STARTTIMEOUT=10 #Seconds to wait for a stranger to do something
+STARTTIMEOUT=600 #Seconds to wait for a stranger to do something
 
 class ProxiedOmegleEventHandler(Omegle.EventHandler):
     def __init__(self, start_queue, discon_event):
@@ -56,8 +57,14 @@ class ProxiedOmegleEventHandler(Omegle.EventHandler):
     def strangerDisconnected(self,chat,var):
         verbose(chat.id, "Stranger disconnected")
         self.discon_event.set()
+    def error(self,chat,var):
+        for e in var:
+            verbose(chat.id, "Error: %s"%str(e))
+            sys.exit(-6)
     #Events to ignore
     def waiting(self,chat,var):
+        return
+    def stoppedTyping(self,chat,var):
         return
             
 
@@ -79,9 +86,13 @@ def main():
     chat.connect_events(ProxiedOmegleEventHandler(start_queue, discon_event))
     #Connect to Omegle
     verbose(None, "Starting Chat")
-    if chat.connect() is False:
-        verbose(None, "Unable to connect to Chat")
-        sys.exit(-1)
+    try:
+        if chat.connect() is False:
+            verbose(None, "Unable to connect to Chat")
+            sys.exit(-1)
+    except httplib.BadStatusLine as e:
+        verbose(None, "Bad Status Line")
+        sys.exit(-5)
     #Wait for the other user to say something
     try:
         startstr = start_queue.get(timeout=STARTTIMEOUT)
@@ -94,6 +105,8 @@ def main():
         verbose(None, "Terminating")
         sys.exit(-2)
     #Ok, so the stranger's said something or started typing.
+    if proxy is not None:
+        verbose(chat.id, "Proxy is working: %s"%proxy)
     for line in script:
         #If we're pausing
         if isinstance(line, numbers.Number):

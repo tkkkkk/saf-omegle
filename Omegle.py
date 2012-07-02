@@ -1,5 +1,7 @@
 import cookielib
+import httplib
 import simplejson
+import socket
 import threading
 import time
 import urllib
@@ -8,7 +10,7 @@ import urllib2
 #TODO: make debug a function pointer -> debug(chat, str), True for some
 #default or False for quietness
 
-user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.11 Safari/535.19"
+user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.11 Safari/535.20"
 """Bogus user agent.  *May* be somethnig omegle uses for bot detection."""
 
 class EventHandler(object):
@@ -101,9 +103,12 @@ class OmegleChat(object):
             #Make sure we're using a proxy
             own_ip = urllib2.urlopen(
                 "http://api.externalip.net/ip/").read().strip() 
-            proxied_ip = self.connector.open(
-                "http://api.externalip.net/ip/").read().strip()
-            if own_ip == proxied_ip:
+            try:
+                proxied_ip = self.connector.open(
+                    "http://api.externalip.net/ip/").read().strip()
+                if own_ip == proxied_ip:
+                    raise ProxyException(proxy, own_ip)
+            except (socket.error, httplib.BadStatusLine, urllib2.URLError):
                 raise ProxyException(proxy, own_ip)
         else:
             self.connector = urllib2.build_opener(processor)
@@ -226,7 +231,7 @@ class OmegleChat(object):
                     print str(e)
                 return False
             self.id = text.strip('"')
-            if self.debug: print "Got ID: " + self.id
+            if self.debug: sys.stderr.write("Got ID: \n" + self.id)
             self.terminated.clear()
             self.connected = True
             self.reactor = _ReactorThread(self)
